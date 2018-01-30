@@ -1,0 +1,16 @@
+version: '3.4'
+services:
+  titles:
+    image: com.disney.studios/titles-reference:latest
+    build:
+      context: .
+      args:
+        JAR_FILE: build/libs/titles-reference-0.0.1-SNAPSHOT.jar
+    environment:
+      SPRING_PROFILES_ACTIVE: compose
+    ports:
+     - "8080:8080"
+    links:
+      - mongodb
+  mongodb:
+    image: mongo:3.6
