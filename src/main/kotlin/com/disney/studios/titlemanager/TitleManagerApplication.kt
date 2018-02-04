@@ -1,67 +1,44 @@
 package com.disney.studios.titlemanager
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import org.springframework.boot.ApplicationRunner
+import com.disney.studios.titlemanager.repository.TitleRepository
+import com.disney.studios.titlemanager.util.TitleLoader
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.support.beans
-import org.springframework.core.io.DefaultResourceLoader
-import org.springframework.core.io.ResourceLoader
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.body
 import org.springframework.web.reactive.function.server.router
-import reactor.core.publisher.Flux
-import reactor.core.publisher.toFlux
-import org.springframework.web.reactive.function.server.*
 
 @SpringBootApplication
-class TitleManagerApplication
+class TitleManagerApplication {
+
+}
 
 fun main(args: Array<String>) {
     SpringApplicationBuilder()
             .sources(TitleManagerApplication::class.java)
-            .initializers(beans {
-                bean {
-                    ApplicationRunner {
-
-                        val titleRepo = ref<TitleRepository>()
-                        val resourceLoader = DefaultResourceLoader()
-                        val json = jacksonObjectMapper()
-
-                        val titlesToImport = json
-                                .readValue<List<Title>>(resourceLoader.getResource("classpath:titles.json").inputStream)
-
-                        val saveTitles: Flux<Title> = titlesToImport
-                                .toFlux()
-                                .flatMap { titleRepo.save(it) }
-
-                        titleRepo
-                                .deleteAll()
-                                .thenMany(saveTitles)
-                                .thenMany(titleRepo.findAll())
-                                .subscribe { println(it) }
-                    }
-                }
-                bean {
-                    router {
-                        val titleRepo = ref<TitleRepository>()
-                        GET("/titles/{id}") {
-                            ServerResponse.ok().body(titleRepo.findById(it.pathVariable("id")))
-                        }
-
-                        GET("/titles") {
-                            ServerResponse.ok().body(titleRepo.findAll())
-                        }
-                    }
-                }
-            })
+            .initializers(appBeans())
             .run(*args)
 }
 
-interface TitleRepository : ReactiveMongoRepository<Title, String>
+fun appBeans() = beans {
+    bean<TitleLoader>()
+    bean {
+        router {
+            val titleRepo = ref<TitleRepository>()
+            GET("/titles/{id}") {
+                ServerResponse.ok().body(titleRepo.findById(it.pathVariable("id")))
+            }
 
-@Document
-data class Title(@Id var id: String? = null, var name: String? = null)
+            GET("/titles") {
+                ServerResponse.ok().body(titleRepo.findAll())
+            }
+        }
+    }
+}
+
+
+
+
+
+

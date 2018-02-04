@@ -1,8 +1,35 @@
 [
   {
-    "name": "uli"
+    "name": "uli",
+    "type": "Feature",
+    "theatricalReleaseDate": "2017-08-09",
+    "duration": "100 min",
+    "bonuses": [
+      {
+        "name": "uli bonus",
+        "type": "Bonus",
+        "duration": "100 min"
+      }
+    ]
   },
   {
-    "name": "kavya"
+  "name": "kavya",
+  "type": "TV Series",
+    "releaseDate": "2017-08-09",
+    "seasons": [
+      {
+        "name": "uli season 1",
+        "type": "Season",
+        "releaseDate": "2017-08-09",
+        "episodes": [
+          {
+            "name": "uli episode",
+            "type": "Episode",
+            "releaseDate": "2017-08-09",
+            "duration": "100 min"
+          }
+        ]
+      }
+    ]
   }
 ]
