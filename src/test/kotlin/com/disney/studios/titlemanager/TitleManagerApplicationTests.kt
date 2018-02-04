@@ -15,7 +15,6 @@ class TitleManagerApplicationTests {
 
     @Test
 	fun contextLoads() {
-        Thread.sleep(5000)
         println("AAAAAAAAAAAA")
 	}
 

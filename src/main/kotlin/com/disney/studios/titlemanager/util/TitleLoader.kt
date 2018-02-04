@@ -46,8 +46,9 @@ class TitleLoader(private val titleRepo: TitleRepository, @Value("\${titles.loca
                 .deleteAll()
                 .thenMany(saveTitles)
                 .thenMany(titleRepo.findAll())
-                .doOnError { LOG.error("Kaboom!", it) }
-                .subscribe { println(it) }
+                .doOnError { throw it }
+                .log()
+                .blockLast()
     }
 
     private fun process(title:Title): Publisher<Title> {
