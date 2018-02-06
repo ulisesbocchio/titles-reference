@@ -1,13 +1,15 @@
 package com.disney.studios.titlemanager.util
 
-import com.disney.studios.titlemanager.document.*
+import com.disney.studios.titlemanager.document.ChildTitle
+import com.disney.studios.titlemanager.document.Season
+import com.disney.studios.titlemanager.document.Title
+import com.disney.studios.titlemanager.document.TvSeries
 import com.disney.studios.titlemanager.repository.TitleRepository
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.bson.types.ObjectId
 import org.reactivestreams.Publisher
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.core.io.DefaultResourceLoader
@@ -16,7 +18,7 @@ import reactor.core.publisher.Mono
 import reactor.core.publisher.toFlux
 
 
-class TitleLoader(private val titleRepo: TitleRepository, @Value("\${titles.location}") private val titlesLocation: String): ApplicationRunner {
+class TitleLoader(private val titleRepo: TitleRepository, private val titlesLocation: String): ApplicationRunner {
 
     private val LOG = LoggerFactory.getLogger(TitleLoader::class.java)
 

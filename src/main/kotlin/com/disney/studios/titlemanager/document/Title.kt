@@ -1,14 +1,17 @@
 package com.disney.studios.titlemanager.document
 
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import org.springframework.core.style.ToStringCreator
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
-@Document
+@Document(collection = "titles")
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
@@ -26,6 +29,7 @@ abstract class Title(
         var name: String? = null,
         var description: String?,
         @DBRef
+        @JsonManagedReference
         var bonuses: List<Bonus>? = emptyList()
 ) {
     open fun toStringCreator(): ToStringCreator {
@@ -41,23 +45,24 @@ abstract class ChildTitle(
         id: String? = null,
         name: String? = null,
         description: String?,
-        bonuses: List<Bonus>?,
-        @DBRef
-        var parent: Title?
+        bonuses: List<Bonus>?
 ) : Title(id, name, description, bonuses) {
     override fun toStringCreator(): ToStringCreator {
         return super.toStringCreator()
                 .append("parent", parent?.id);
     }
+
+    @JsonBackReference
+    @Transient
+    var parent: Title? = null
 }
 
 class Bonus(
         id: String? = null,
         name: String? = null,
         description: String?,
-        parent: Title?,
         var duration: String
-) : ChildTitle(id, name, description, null, parent) {
+) : ChildTitle(id, name, description, null) {
     override fun toString(): String {
         return toStringCreator()
                 .append("duration", duration)
@@ -88,6 +93,7 @@ class TvSeries(
         bonuses: List<Bonus>?,
         var releaseDate: Date,
         @DBRef
+        @JsonManagedReference
         var seasons: List<Season>? = emptyList()
 ) : Title(id, name, description, bonuses) {
     override fun toString(): String {
@@ -103,11 +109,11 @@ class Season(
         name: String? = null,
         description: String?,
         bonuses: List<Bonus>?,
-        parent: TvSeries?,
         var releaseDate: Date,
         @DBRef
+        @JsonManagedReference
         var episodes: List<Episode>? = emptyList()
-) : ChildTitle(id, name, description, bonuses, parent) {
+) : ChildTitle(id, name, description, bonuses) {
     override fun toString(): String {
         return toStringCreator()
                 .append("releaseDate", releaseDate)
@@ -121,10 +127,9 @@ class Episode(
         name: String? = null,
         description: String?,
         bonuses: List<Bonus>?,
-        parent: Season?,
         var releaseDate: Date,
         var duration: String
-) : ChildTitle(id, name, description, bonuses, parent) {
+) : ChildTitle(id, name, description, bonuses) {
     override fun toString(): String {
         return toStringCreator()
                 .append("releaseDate", releaseDate)
