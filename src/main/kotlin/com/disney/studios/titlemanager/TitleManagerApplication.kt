@@ -20,11 +20,11 @@ class TitleManagerApplication {
     @Bean
     fun appRoutes(titleRepository: TitleRepository) = router {
         GET("/titles/{id}") {
-            ServerResponse.ok().body(titleRepository.findById(it.pathVariable("id")))
+            ServerResponse.ok().body(titleRepository.findByIdWithParent(it.pathVariable("id")))
         }
 
         GET("/titles") {
-            ServerResponse.ok().body(titleRepository.findAll())
+            ServerResponse.ok().body(titleRepository.findAllSummaries())
         }
     }
 

@@ -30,7 +30,7 @@ abstract class Title(
         var description: String?,
         @DBRef
         @JsonManagedReference
-        var bonuses: List<Bonus>? = emptyList()
+        var bonuses: List<Bonus>? = null
 ) {
     open fun toStringCreator(): ToStringCreator {
         return ToStringCreator(this)
@@ -94,7 +94,7 @@ class TvSeries(
         var releaseDate: Date,
         @DBRef
         @JsonManagedReference
-        var seasons: List<Season>? = emptyList()
+        var seasons: List<Season>? = null
 ) : Title(id, name, description, bonuses) {
     override fun toString(): String {
         return toStringCreator()
@@ -112,7 +112,7 @@ class Season(
         var releaseDate: Date,
         @DBRef
         @JsonManagedReference
-        var episodes: List<Episode>? = emptyList()
+        var episodes: List<Episode>? = null
 ) : ChildTitle(id, name, description, bonuses) {
     override fun toString(): String {
         return toStringCreator()

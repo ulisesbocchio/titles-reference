@@ -2,6 +2,9 @@ server:
   port: 8080
 titles:
   location: classpath:titles.json
+spring:
+  jackson:
+    default-property-inclusion: non_null
 ---
 spring:
   profiles: compose

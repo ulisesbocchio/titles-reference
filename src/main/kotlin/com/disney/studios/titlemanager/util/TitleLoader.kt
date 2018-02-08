@@ -59,7 +59,7 @@ class TitleLoader(private val titleRepo: TitleRepository, private val titlesLoca
                 .empty<Title>()
                 .concatWith(
                     when (title) {
-                        is TvSeries-> processChildren(title.seasons, title)
+                        is TvSeries -> processChildren(title.seasons, title)
                         is Season -> processChildren(title.episodes, title)
                         else -> Flux.empty()
                     }
@@ -70,9 +70,9 @@ class TitleLoader(private val titleRepo: TitleRepository, private val titlesLoca
 
     private fun processChildren(children: List<ChildTitle>?, parent: Title): Publisher<Title> {
         return children?.toFlux()
-                ?.flatMap {
+                ?.map {
                     it.parent = parent
-                    Mono.just(it)
+                    it
                 }
                 ?.flatMap { process(it) }
                 ?: Mono.empty()
