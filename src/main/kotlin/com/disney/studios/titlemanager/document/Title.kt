@@ -1,7 +1,5 @@
 package com.disney.studios.titlemanager.document
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import org.springframework.core.style.ToStringCreator
@@ -29,7 +27,6 @@ abstract class Title(
         var name: String? = null,
         var description: String?,
         @DBRef
-        @JsonManagedReference
         var bonuses: List<Bonus>? = null
 ) {
     open fun toStringCreator(): ToStringCreator {
@@ -52,7 +49,6 @@ abstract class ChildTitle(
                 .append("parent", parent?.id);
     }
 
-    @JsonBackReference
     @Transient
     var parent: Title? = null
 }
@@ -93,7 +89,6 @@ class TvSeries(
         bonuses: List<Bonus>?,
         var releaseDate: Date,
         @DBRef
-        @JsonManagedReference
         var seasons: List<Season>? = null
 ) : Title(id, name, description, bonuses) {
     override fun toString(): String {
@@ -111,7 +106,6 @@ class Season(
         bonuses: List<Bonus>?,
         var releaseDate: Date,
         @DBRef
-        @JsonManagedReference
         var episodes: List<Episode>? = null
 ) : ChildTitle(id, name, description, bonuses) {
     override fun toString(): String {

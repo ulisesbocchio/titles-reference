@@ -9,22 +9,25 @@ import org.springframework.context.annotation.Bean
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.body
 import org.springframework.web.reactive.function.server.router
+import reactor.core.publisher.toMono
 
 @SpringBootApplication
 class TitleManagerApplication {
 
     @Bean
     fun titleLoader(titleRepository: TitleRepository,
-                    @Value("\${titles.location}") titlesLocation: String)= TitleLoader(titleRepository, titlesLocation)
+                    @Value("\${titles.location}") titlesLocation: String) = TitleLoader(titleRepository, titlesLocation)
 
     @Bean
     fun appRoutes(titleRepository: TitleRepository) = router {
         GET("/titles/{id}") {
-            ServerResponse.ok().body(titleRepository.findByIdWithParent(it.pathVariable("id")))
+            titleRepository.findByIdWithParent(it.pathVariable("id"))
+                    .flatMap { ServerResponse.ok().json().body(it.toMono()) }
+                    .switchIfEmpty(ServerResponse.notFound().build())
         }
 
         GET("/titles") {
-            ServerResponse.ok().body(titleRepository.findAllSummaries())
+            ServerResponse.ok().json().body(titleRepository.findAllSummaries())
         }
     }
 

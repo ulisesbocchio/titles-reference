@@ -16,9 +16,10 @@ import org.springframework.core.io.DefaultResourceLoader
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toFlux
+import reactor.core.publisher.toMono
 
 
-class TitleLoader(private val titleRepo: TitleRepository, private val titlesLocation: String): ApplicationRunner {
+class TitleLoader(private val titleRepo: TitleRepository, private val titlesLocation: String) : ApplicationRunner {
 
     private val LOG = LoggerFactory.getLogger(TitleLoader::class.java)
 
@@ -41,7 +42,6 @@ class TitleLoader(private val titleRepo: TitleRepository, private val titlesLoca
                 .flatMap {
                     LOG.info("Saving: $it")
                     titleRepo.save(it)
-                    //Mono.just(it)
                 }
 
         titleRepo
@@ -53,19 +53,19 @@ class TitleLoader(private val titleRepo: TitleRepository, private val titlesLoca
                 .blockLast()
     }
 
-    private fun process(title:Title): Publisher<Title> {
+    private fun process(title: Title): Publisher<Title> {
         title.id = ObjectId().toHexString()
         return Mono
                 .empty<Title>()
                 .concatWith(
-                    when (title) {
-                        is TvSeries -> processChildren(title.seasons, title)
-                        is Season -> processChildren(title.episodes, title)
-                        else -> Flux.empty()
-                    }
+                        when (title) {
+                            is TvSeries -> processChildren(title.seasons, title)
+                            is Season -> processChildren(title.episodes, title)
+                            else -> Flux.empty()
+                        }
                 )
                 .concatWith(processChildren(title.bonuses, title))
-                .concatWith(Mono.just(title))
+                .concatWith(title.toMono())
     }
 
     private fun processChildren(children: List<ChildTitle>?, parent: Title): Publisher<Title> {
