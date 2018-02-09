@@ -11,18 +11,22 @@ import org.springframework.data.mongodb.core.query.Criteria.where
 import org.springframework.data.mongodb.core.query.Query.query
 import org.springframework.data.mongodb.core.query.isEqualTo
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 
 class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperations) : TitleRepositoryCustom {
 
-    override fun findByIdWithParent(id: String): Mono<Title> {
-        return mongoOperations.findById<Title>(id)
-                .flatMap { title ->
-                    when (title) {
-                        is ChildTitle -> findAndSetParent(title)
-                        else -> Mono.just(title)
+    override fun createTitle(title: Mono<Title>): Mono<Title> = mongoOperations.insert(title)
+
+    override fun updateTitle(title: Mono<Title>): Mono<Title> = mongoOperations.save(title)
+
+    override fun findByIdWithParent(id: String): Mono<Title> =
+            mongoOperations.findById<Title>(id)
+                    .flatMap { title ->
+                        when (title) {
+                            is ChildTitle -> findAndSetParent(title)
+                            else -> title.toMono()
+                        }
                     }
-                }
-    }
 
     private fun findParentSummaryById(id: String): Mono<Title> {
         val query = query(
@@ -39,12 +43,11 @@ class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperat
         return mongoOperations.findOne(query)
     }
 
-    private fun findAndSetParent(title: ChildTitle): Mono<Title> {
-        return findParentSummaryById(title.id!!)
-                .map {
-                    title.parent = it
-                    title as Title
-                }.defaultIfEmpty(title)
-    }
+    private fun findAndSetParent(title: ChildTitle): Mono<Title> =
+            findParentSummaryById(title.id!!)
+                    .map {
+                        title.parent = it
+                        title as Title
+                    }.defaultIfEmpty(title)
 
 }

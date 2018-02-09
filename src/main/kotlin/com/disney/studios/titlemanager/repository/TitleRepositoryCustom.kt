@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono
 
 interface TitleRepositoryCustom {
     fun findByIdWithParent(id: String): Mono<Title>
+    fun createTitle(title: Mono<Title>): Mono<Title>
+    fun updateTitle(title: Mono<Title>): Mono<Title>
 }
