@@ -1,5 +1,6 @@
 package com.disney.studios.titlemanager.util
 
+import com.disney.studios.titlemanager.toFlux
 import com.disney.studios.titlemanager.document.ChildTitle
 import com.disney.studios.titlemanager.document.Season
 import com.disney.studios.titlemanager.document.Title
@@ -15,9 +16,7 @@ import org.springframework.boot.ApplicationRunner
 import org.springframework.core.io.DefaultResourceLoader
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.core.publisher.toFlux
 import reactor.core.publisher.toMono
-
 
 class TitleLoader(private val titleRepo: TitleRepository, private val titlesLocation: String) : ApplicationRunner {
 
@@ -69,12 +68,11 @@ class TitleLoader(private val titleRepo: TitleRepository, private val titlesLoca
     }
 
     private fun processChildren(children: List<ChildTitle>?, parent: Title): Publisher<Title> {
-        return children?.toFlux()
-                ?.map {
+        return children.toFlux()
+                .map {
                     it.parent = parent
                     it
                 }
-                ?.flatMap { process(it) }
-                ?: Mono.empty()
+                .flatMap { process(it) }
     }
 }

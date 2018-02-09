@@ -2,6 +2,8 @@ package com.disney.studios.titlemanager.repository
 
 import com.disney.studios.titlemanager.document.ChildTitle
 import com.disney.studios.titlemanager.document.Title
+import com.disney.studios.titlemanager.findById
+import com.disney.studios.titlemanager.findOne
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.ReactiveMongoOperations
 import org.springframework.data.mongodb.core.query.Criteria

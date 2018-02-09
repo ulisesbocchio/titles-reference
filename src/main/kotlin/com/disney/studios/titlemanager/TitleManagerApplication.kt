@@ -1,15 +1,13 @@
 package com.disney.studios.titlemanager
 
+import com.disney.studios.titlemanager.handler.TitleHandler
 import com.disney.studios.titlemanager.repository.TitleRepository
 import com.disney.studios.titlemanager.util.TitleLoader
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
-import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.body
 import org.springframework.web.reactive.function.server.router
-import reactor.core.publisher.toMono
 
 @SpringBootApplication
 class TitleManagerApplication {
@@ -19,15 +17,18 @@ class TitleManagerApplication {
                     @Value("\${titles.location}") titlesLocation: String) = TitleLoader(titleRepository, titlesLocation)
 
     @Bean
-    fun appRoutes(titleRepository: TitleRepository) = router {
-        GET("/titles/{id}") {
-            titleRepository.findByIdWithParent(it.pathVariable("id"))
-                    .flatMap { ServerResponse.ok().json().body(it.toMono()) }
-                    .switchIfEmpty(ServerResponse.notFound().build())
-        }
+    fun titleHandler(titleRepository: TitleRepository) = TitleHandler(titleRepository)
 
-        GET("/titles") {
-            ServerResponse.ok().json().body(titleRepository.findAllSummaries())
+    @Bean
+    fun appRoutes(titleHandler: TitleHandler) = router {
+        "/titles".nest {
+            GET("/", titleHandler::getAllTitles)
+            POST("/", titleHandler::createTitle)
+            GET("/{id}", titleHandler::getTitleById)
+            PUT("/{id}", titleHandler::updateTitle)
+            DELETE("/{id}", titleHandler::deleteTitle)
+            PUT("/{id}/{child}", titleHandler::addChild)
+            DELETE("/{id}/{child}", titleHandler::addChild)
         }
     }
 
