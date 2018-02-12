@@ -1,19 +1,23 @@
 package com.disney.studios.titlemanager.handler
 
 import com.disney.studios.titlemanager.bodyToMono
+import com.disney.studios.titlemanager.document.*
 import com.disney.studios.titlemanager.json
+import com.disney.studios.titlemanager.minus
+import com.disney.studios.titlemanager.plus
 import com.disney.studios.titlemanager.repository.TitleRepository
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.body
-import reactor.core.publisher.Mono
-import reactor.core.publisher.toMono
+import kotlin.reflect.KClass
 
 class TitleHandler(private val titleRepository: TitleRepository) {
 
     fun getTitleById(request: ServerRequest) =
             titleRepository.findByIdWithParent(request.pathVariable("id"))
-                    .flatMap { ServerResponse.ok().json().body(it.toMono()) }
+                    .compose { ServerResponse.ok().json().body(it) }
                     .switchIfEmpty(ServerResponse.notFound().build())
 
     fun getAllTitles(request: ServerRequest) =
@@ -21,11 +25,59 @@ class TitleHandler(private val titleRepository: TitleRepository) {
 
     fun createTitle(request: ServerRequest) = ServerResponse.ok().body(titleRepository.createTitle(request.bodyToMono()))
 
-    fun updateTitle(request: ServerRequest) = ServerResponse.ok().body(titleRepository.updateTitle(request.bodyToMono()))
+    fun updateTitle(request: ServerRequest) = titleRepository.findById(request.pathVariable("id"))
+            .flatMap { TitleUpdater(request.bodyToMono()).visit(it) }
+            .compose { titleRepository.updateTitle(it) }
+            .compose { ServerResponse.ok().body(it) }
+            .switchIfEmpty(ServerResponse.notFound().build())
 
-    fun deleteTitle(request: ServerRequest) = ServerResponse.ok().body(titleRepository.deleteById(request.pathVariable("id")))
+    fun deleteTitle(request: ServerRequest) =
+            titleRepository.existsById(request.pathVariable("id"))
+                    .flatMap {
+                        if (it)
+                            titleRepository.deleteById(request.pathVariable("id"))
+                                    .compose { ServerResponse.ok().json().body(it) }
+                        else ServerResponse.notFound().build()
+                    }
 
-    fun addChild(request: ServerRequest) = ServerResponse.ok().body(Mono.empty())
+    fun addChild(request: ServerRequest) =
+            titleRepository.findById(request.pathVariable("id"))
+                    .zipWith(titleRepository.findById(request.pathVariable("childId")))
+                    .map { addChild(it.t1, it.t2, request.pathVariable("childType")) }
+                    .compose { titleRepository.updateTitle(it) }
+                    .compose { ServerResponse.ok().json().body(it) }
+                    .switchIfEmpty(ServerResponse.notFound().build())
 
-    fun deleteChild(request: ServerRequest) = ServerResponse.ok().body(Mono.empty())
+
+    fun deleteChild(request: ServerRequest) =
+            titleRepository.findById(request.pathVariable("id"))
+                    .map { deleteChild(it, request.pathVariable("childId"), request.pathVariable("childType")) }
+                    .compose { titleRepository.updateTitle(it) }
+                    .compose { ServerResponse.ok().json().body(it) }
+                    .switchIfEmpty(ServerResponse.notFound().build())
+
+
+    private fun addChild(parent: Title, child: Title, childType: String): Title {
+        when (childType) {
+            "bonuses" -> doWhen(child, Bonus::class) { parent.bonuses += it }
+            "seasons" -> doWhen(parent, TvSeries::class) { series -> doWhen(child, Season::class) { series.seasons += it } }
+            "episodes" -> doWhen(parent, Season::class) { season -> doWhen(child, Episode::class) { season.episodes += it } }
+            else -> throw HttpClientErrorException(HttpStatus.BAD_REQUEST)
+        }
+        return parent
+    }
+
+    private fun deleteChild(parent: Title, childId: String, childType: String): Title {
+        when (childType) {
+            "bonuses" -> parent.bonuses -= Bonus(childId)
+            "seasons" -> doWhen(parent, TvSeries::class) { it.seasons -= Season(childId) }
+            "episodes" -> doWhen(parent, Season::class) { it.episodes -= Episode(childId) }
+            else -> throw HttpClientErrorException(HttpStatus.BAD_REQUEST)
+        }
+        return parent
+    }
+
+    private inline fun <reified T : Any> doWhen(title: Title, clazz: KClass<T>, doFn: (T) -> Unit) {
+        if (title is T) doFn(title) else HttpClientErrorException(HttpStatus.BAD_REQUEST)
+    }
 }

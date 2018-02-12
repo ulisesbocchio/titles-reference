@@ -19,3 +19,19 @@ fun ServerResponse.BodyBuilder.json() = contentType(MediaType.APPLICATION_JSON_U
 fun <T> Iterable<T>?.toFlux(): Flux<T> = if (this != null) Flux.fromIterable(this) else Flux.empty()
 
 inline fun < reified T : Any> ServerRequest.bodyToMono(): Mono<T> = bodyToMono(T::class.java)
+
+inline fun <reified T: Any> Mono<*>.cast(): Mono<T> = cast(T::class.java)
+
+operator fun <T> Collection<T>?.plus(element: T): List<T> {
+    val result = ArrayList<T>((this?.size ?: 0) + 1)
+    result.addAll(this ?: emptyList())
+    result.add(element)
+    return result
+}
+
+operator fun <T> Collection<T>?.minus(element: T): List<T>? {
+    val result = ArrayList<T>((this?.size ?: 0) - 1)
+    var removed = false
+    return this?.filterTo(result) { if (!removed && it == element) { removed = true; false } else true }
+}
+
