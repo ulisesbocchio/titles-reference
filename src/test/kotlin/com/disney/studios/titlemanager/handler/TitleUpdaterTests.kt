@@ -1,27 +1,25 @@
 package com.disney.studios.titlemanager.handler
 
+import com.disney.studios.titlemanager.date
 import com.disney.studios.titlemanager.document.Bonus
 import com.disney.studios.titlemanager.document.Episode
 import com.disney.studios.titlemanager.document.Feature
 import com.disney.studios.titlemanager.document.Title
+import com.disney.studios.titlemanager.should
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DynamicTest
-import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.springframework.web.client.HttpClientErrorException
 import reactor.core.publisher.toMono
 import reactor.test.StepVerifier
-import java.text.SimpleDateFormat
-
-fun should(name: String, test: () -> Unit) = dynamicTest(name, test)
-fun date(str: String) = SimpleDateFormat("yyyy-MM-dd").parse(str)
 
 class TitleUpdaterTests {
     @TestFactory
     fun titleUpdateTests(): Collection<DynamicTest> {
         return listOf(
+
                 should("Update Episode with Episode") {
                     val title = Episode()
                     val update = Episode()
@@ -41,6 +39,7 @@ class TitleUpdaterTests {
                             }
                             .verifyComplete()
                 },
+
                 should("Update Base Title with Bonus") {
                     val title = spy<Title>()
                     val update = Bonus()
@@ -57,6 +56,7 @@ class TitleUpdaterTests {
                             }
                             .verifyComplete()
                 },
+
                 should("Update Base Title with Base Title") {
                     val title = spy<Title>()
                     val update = mock<Title>()
