@@ -10,17 +10,17 @@ import org.springframework.context.annotation.Bean
 import org.springframework.web.reactive.function.server.router
 
 @SpringBootApplication
-class TitleManagerApplication {
+open class TitleManagerApplication {
 
     @Bean
-    fun titleLoader(titleRepository: TitleRepository,
-                    @Value("\${titles.location}") titlesLocation: String) = TitleLoader(titleRepository, titlesLocation)
+    open fun titleLoader(titleRepository: TitleRepository,
+                         @Value("\${titles.location}") titlesLocation: String) = TitleLoader(titleRepository, titlesLocation)
 
     @Bean
-    fun titleHandler(titleRepository: TitleRepository) = TitleHandler(titleRepository)
+    open fun titleHandler(titleRepository: TitleRepository) = TitleHandler(titleRepository)
 
     @Bean
-    fun appRoutes(titleHandler: TitleHandler) = router {
+    open fun appRoutes(titleHandler: TitleHandler) = router {
         "/titles".nest {
             GET("/", titleHandler::getAllTitles)
             POST("/", titleHandler::createTitle)
