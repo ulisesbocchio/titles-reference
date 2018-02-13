@@ -27,8 +27,8 @@ open class TitleManagerApplication {
             GET("/{id}", titleHandler::getTitleById)
             PUT("/{id}", titleHandler::updateTitle)
             DELETE("/{id}", titleHandler::deleteTitle)
-            PUT("/{id}/{childType}/{child}", titleHandler::addChild)
-            DELETE("/{id}/{childType}/{child}", titleHandler::deleteChild)
+            PUT("/{id}/{childType}/{childId}", titleHandler::addChild)
+            DELETE("/{id}/{childType}/{childId}", titleHandler::deleteChild)
         }
     }
 
