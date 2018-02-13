@@ -91,7 +91,7 @@ abstract class ChildTitle(
     }
 }
 
-class Bonus(
+open class Bonus(
         id: String? = null,
         name: String? = null,
         description: String? = null,

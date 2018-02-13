@@ -29,7 +29,7 @@ class TitleHandler(private val titleRepository: TitleRepository) {
     fun createTitle(request: ServerRequest) = ServerResponse.ok().body(titleRepository.createTitle(request.bodyToMono()))
 
     fun updateTitle(request: ServerRequest) = titleRepository.findById(request.pathVariable("id"))
-            .flatMap { TitleUpdater(request.bodyToMono()).visit(it) }
+            .flatMap { it.accept(TitleUpdater(request.bodyToMono())) }
             .compose { titleRepository.updateTitle(it) }
             .compose { okOrNotFound(it) }
 

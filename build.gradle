@@ -68,4 +68,5 @@ dependencies {
     testCompile("org.junit.jupiter:junit-jupiter-api")
     testRuntime("org.junit.jupiter:junit-jupiter-engine")
     testRuntime("org.junit.platform:junit-platform-engine")
+    testCompile("com.nhaarman:mockito-kotlin:1.5.0")
 }
