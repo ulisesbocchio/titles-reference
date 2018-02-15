@@ -11,5 +11,4 @@ interface TitleRepository : ReactiveMongoRepository<Title, String>, TitleReposit
 
     @Query(value = "{}", fields = "{ 'bonuses': 0, 'episodes': 0, 'seasons': 0 }")
     fun findAllSummaries(): Flux<Title>
-
 }

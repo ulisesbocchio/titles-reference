@@ -19,6 +19,8 @@ class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperat
 
     override fun updateTitle(title: Mono<Title>): Mono<Title> = mongoOperations.save(title)
 
+    // Spring data mongodb doesn't handle circular references gracefully so manual intervention is needed here.
+    // Basically instead of dealing with the parent as a DBRef, we fabricate it into a transient property of  ChildTitle
     override fun findByIdWithParent(id: String): Mono<Title> =
             mongoOperations.findById<Title>(id)
                     .flatMap { title ->
@@ -27,6 +29,13 @@ class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperat
                             else -> title.toMono()
                         }
                     }
+
+    private fun findAndSetParent(title: ChildTitle): Mono<Title> =
+            findParentSummaryById(title.id!!)
+                    .map {
+                        title.parent = it
+                        title as Title
+                    }.defaultIfEmpty(title)
 
     private fun findParentSummaryById(id: String): Mono<Title> {
         val query = query(
@@ -42,12 +51,4 @@ class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperat
                 .exclude("seasons")
         return mongoOperations.findOne(query)
     }
-
-    private fun findAndSetParent(title: ChildTitle): Mono<Title> =
-            findParentSummaryById(title.id!!)
-                    .map {
-                        title.parent = it
-                        title as Title
-                    }.defaultIfEmpty(title)
-
 }
