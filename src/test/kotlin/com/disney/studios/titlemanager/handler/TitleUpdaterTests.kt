@@ -17,10 +17,10 @@ import reactor.test.StepVerifier
 
 class TitleUpdaterTests {
     @TestFactory
-    fun titleUpdateTests(): Collection<DynamicTest> {
+    fun titleUpdater(): Collection<DynamicTest> {
         return listOf(
 
-                should("Update Episode with Episode") {
+                should("update Episode with Episode") {
                     val title = Episode()
                     val update = Episode()
                     update.name = "Frozen"
@@ -40,7 +40,7 @@ class TitleUpdaterTests {
                             .verifyComplete()
                 },
 
-                should("Update Base Title with Bonus") {
+                should("update Base Title with Bonus") {
                     val title = spy<Title>()
                     val update = Bonus()
                     update.name = "Frozen"
@@ -57,7 +57,7 @@ class TitleUpdaterTests {
                             .verifyComplete()
                 },
 
-                should("Update Base Title with Base Title") {
+                should("update Base Title with Base Title") {
                     val title = spy<Title>()
                     val update = mock<Title>()
                     update.name = "Frozen"
@@ -73,7 +73,7 @@ class TitleUpdaterTests {
                             .verifyComplete()
                 },
 
-                should("Fail updating Bonus with Feature") {
+                should("fail updating Bonus with Feature") {
                     val title = Bonus()
                     val update = Feature()
                     update.name = "Frozen"

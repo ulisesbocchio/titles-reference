@@ -1,7 +1,9 @@
 package com.disney.studios.titlemanager.repository
 
 import com.disney.studios.titlemanager.TitleManagerApplication
+import com.disney.studios.titlemanager.should
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfiguration
 import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerAutoConfiguration
@@ -21,10 +23,12 @@ class TitleRepositoryTests {
     @Autowired
     lateinit var titlesRepo: TitleRepository
 
-    @Test
-    fun shouldFindAllLoadedTitlesFromRepository() {
-        StepVerifier.create(titlesRepo.findAll())
-                .expectNextCount(44)
-                .verifyComplete()
-    }
+    @TestFactory
+    fun titleRepository() = listOf(
+            should("be initialized with 44 titles from titles.json") {
+                StepVerifier.create(titlesRepo.findAll())
+                        .expectNextCount(44)
+                        .verifyComplete()
+            }
+    )
 }
