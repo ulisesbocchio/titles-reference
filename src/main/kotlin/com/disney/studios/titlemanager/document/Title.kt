@@ -1,7 +1,10 @@
 package com.disney.studios.titlemanager.document
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonSubTypes.*
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonTypeInfo.*
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*
 import org.springframework.core.style.ToStringCreator
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
@@ -24,15 +27,15 @@ interface VisitableTitle {
 
 @Document(collection = "titles")
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
+        use = NAME,
+        include = As.PROPERTY,
         property = "type")
 @JsonSubTypes(
-        JsonSubTypes.Type(value = Bonus::class, name = "Bonus"),
-        JsonSubTypes.Type(value = Feature::class, name = "Feature"),
-        JsonSubTypes.Type(value = TvSeries::class, name = "TV Series"),
-        JsonSubTypes.Type(value = Season::class, name = "Season"),
-        JsonSubTypes.Type(value = Episode::class, name = "Episode")
+        Type(value = Bonus::class, name = "Bonus"),
+        Type(value = Feature::class, name = "Feature"),
+        Type(value = TvSeries::class, name = "TV Series"),
+        Type(value = Season::class, name = "Season"),
+        Type(value = Episode::class, name = "Episode")
 )
 abstract class Title(
         @Id

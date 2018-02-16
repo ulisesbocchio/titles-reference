@@ -23,7 +23,14 @@ class TitleHandler(private val titleRepository: TitleRepository) {
                     .compose { okOrNotFound(it) }
 
     fun getAllTitles(request: ServerRequest) =
-            ServerResponse.ok().json().body(titleRepository.findAllSummaries())
+            ServerResponse.ok().json().body(titleRepository.findAllSummaries(*getTypesParam(request)))
+
+    private fun getTypesParam(request: ServerRequest): Array<String> {
+        return request
+                .queryParam("type")
+                .map { it.split(',').toTypedArray() }
+                .orElse(emptyArray())
+    }
 
 
     fun createTitle(request: ServerRequest) = ServerResponse.ok().body(titleRepository.createTitle(request.bodyToMono()))

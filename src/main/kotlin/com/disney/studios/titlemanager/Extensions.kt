@@ -1,6 +1,7 @@
 package com.disney.studios.titlemanager
 
 import org.springframework.beans.factory.BeanFactory
+import org.springframework.core.annotation.AnnotationUtils
 import org.springframework.data.mongodb.core.ReactiveMongoOperations
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.http.MediaType
@@ -14,6 +15,8 @@ inline fun <reified T : Any> ReactiveMongoOperations.find(query: Query): Flux<T>
 inline fun <reified T : Any> ReactiveMongoOperations.findById(id: String): Mono<T> = findById(id, T::class.java)
 
 inline fun <reified T : Any> ReactiveMongoOperations.findOne(query: Query): Mono<T> = findOne(query, T::class.java)
+
+inline fun <reified C : Any, reified A : Annotation> findAnnotation() = AnnotationUtils.findAnnotation(C::class.java, A::class.java)
 
 fun ServerResponse.BodyBuilder.json() = contentType(MediaType.APPLICATION_JSON_UTF8)
 
