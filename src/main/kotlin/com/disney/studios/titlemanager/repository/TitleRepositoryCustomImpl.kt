@@ -3,16 +3,12 @@ package com.disney.studios.titlemanager.repository
 import com.disney.studios.titlemanager.document.ChildTitle
 import com.disney.studios.titlemanager.document.Title
 import com.disney.studios.titlemanager.find
-import com.disney.studios.titlemanager.findAnnotation
 import com.disney.studios.titlemanager.findById
 import com.disney.studios.titlemanager.findOne
-import com.fasterxml.jackson.annotation.JsonSubTypes
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.ReactiveMongoOperations
 import org.springframework.data.mongodb.core.query.*
 import org.springframework.data.mongodb.core.query.Criteria.where
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
@@ -71,7 +67,7 @@ class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperat
 
     private fun Query.types(vararg types: String): Query {
         if (types.isNotEmpty()) {
-            addCriteria(where("_class").inValues(types.map { classNameForType(it) }))
+            addCriteria(where("type").inValues(*types))
         }
         return this
     }
@@ -81,12 +77,5 @@ class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperat
             addCriteria(TextCriteria().matching(terms))
         }
         return this
-    }
-
-    private fun classNameForType(type: String): String {
-        val jsonTypes = findAnnotation<Title, JsonSubTypes>()
-        val jsonType = jsonTypes.value.find { it.name.equals(type, true) }
-        return jsonType?.value?.qualifiedName
-                ?: throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "Invalid Title type: $type")
     }
 }

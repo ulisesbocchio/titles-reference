@@ -1,13 +1,17 @@
 package com.disney.studios.titlemanager.document
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonSubTypes.*
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.fasterxml.jackson.annotation.JsonTypeInfo.*
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME
+import com.fasterxml.jackson.annotation.JsonTypeName
 import org.springframework.core.style.ToStringCreator
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
+import org.springframework.data.annotation.TypeAlias
+import org.springframework.data.mongodb.core.index.CompoundIndex
+import org.springframework.data.mongodb.core.index.CompoundIndexes
 import org.springframework.data.mongodb.core.index.TextIndexed
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
@@ -32,11 +36,14 @@ interface VisitableTitle {
         include = As.PROPERTY,
         property = "type")
 @JsonSubTypes(
-        Type(value = Bonus::class, name = "Bonus"),
-        Type(value = Feature::class, name = "Feature"),
-        Type(value = TvSeries::class, name = "TV Series"),
-        Type(value = Season::class, name = "Season"),
-        Type(value = Episode::class, name = "Episode")
+        Type(value = Bonus::class),
+        Type(value = Feature::class),
+        Type(value = TvSeries::class),
+        Type(value = Season::class),
+        Type(value = Episode::class)
+)
+@CompoundIndexes(
+        CompoundIndex(def ="{ type: 1 }")
 )
 abstract class Title(
         @Id var id: String? = null,
@@ -93,6 +100,8 @@ abstract class ChildTitle(
     }
 }
 
+@TypeAlias("Bonus")
+@JsonTypeName("Bonus")
 open class Bonus(
         id: String? = null,
         name: String? = null,
@@ -110,6 +119,8 @@ open class Bonus(
     }
 }
 
+@TypeAlias("Feature")
+@JsonTypeName("Feature")
 class Feature(
         id: String? = null,
         name: String? = null,
@@ -130,6 +141,8 @@ class Feature(
     }
 }
 
+@TypeAlias("TV Series")
+@JsonTypeName("TV Series")
 class TvSeries(
         id: String? = null,
         name: String? = null,
@@ -151,6 +164,8 @@ class TvSeries(
     }
 }
 
+@TypeAlias("Season")
+@JsonTypeName("Season")
 class Season(
         id: String? = null,
         name: String? = null,
@@ -172,6 +187,8 @@ class Season(
     }
 }
 
+@TypeAlias("Episode")
+@JsonTypeName("Episode")
 class Episode(
         id: String? = null,
         name: String? = null,

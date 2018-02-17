@@ -3,24 +3,43 @@ package com.disney.studios.titlemanager
 import com.disney.studios.titlemanager.handler.TitleHandler
 import com.disney.studios.titlemanager.repository.TitleRepository
 import com.disney.studios.titlemanager.util.TitleLoader
+import org.springframework.beans.factory.BeanFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
+import org.springframework.data.mongodb.MongoDbFactory
+import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext
 import org.springframework.web.reactive.function.server.router
 
 @SpringBootApplication
-open class TitleManagerApplication {
+class TitleManagerApplication {
 
     @Bean
-    open fun titleLoader(titleRepository: TitleRepository,
-                         @Value("\${titles.location}") titlesLocation: String) = TitleLoader(titleRepository, titlesLocation)
+    fun titleLoader(titleRepository: TitleRepository,
+                    @Value("\${titles.location}") titlesLocation: String) = TitleLoader(titleRepository, titlesLocation)
 
     @Bean
-    open fun titleHandler(titleRepository: TitleRepository) = TitleHandler(titleRepository)
+    fun titleHandler(titleRepository: TitleRepository) = TitleHandler(titleRepository)
 
     @Bean
-    open fun appRoutes(titleHandler: TitleHandler) = router {
+    fun mappingMongoConverter(factory: MongoDbFactory,
+                              context: MongoMappingContext, beanFactory: BeanFactory,
+                              conversions: MongoCustomConversions): MappingMongoConverter {
+        val dbRefResolver = DefaultDbRefResolver(factory)
+        val mappingConverter = MappingMongoConverter(dbRefResolver,
+                context)
+        mappingConverter.setCustomConversions(conversions)
+        mappingConverter.typeMapper = DefaultMongoTypeMapper("type", context)
+        return mappingConverter
+    }
+
+    @Bean
+    fun appRoutes(titleHandler: TitleHandler) = router {
         "/titles".nest {
             GET("/", titleHandler::getAllTitles)
             POST("/", titleHandler::createTitle)
