@@ -1,13 +1,9 @@
 package com.disney.studios.titlemanager.repository
 
 import com.disney.studios.titlemanager.TitleManagerApplication
-import com.disney.studios.titlemanager.document.ChildTitle
-import com.disney.studios.titlemanager.document.Feature
-import com.disney.studios.titlemanager.document.Season
-import com.disney.studios.titlemanager.document.TvSeries
+import com.disney.studios.titlemanager.document.*
 import com.disney.studios.titlemanager.should
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfiguration
@@ -15,6 +11,7 @@ import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerAuto
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
+import reactor.core.publisher.toMono
 import reactor.test.test
 
 @SpringJUnitConfig(classes = [
@@ -54,21 +51,23 @@ class TitleRepositoryTests {
                             result
                         }.verifyComplete()
             },
+
             should("find only Feature") {
-                titlesRepo.findAllSummaries("Feature")
+                titlesRepo.findAllSummaries(types = *arrayOf("Feature"))
                         .test()
                         .thenConsumeWhile { it is Feature }
                         .verifyComplete()
             },
 
             should("find 3 Feature Titles") {
-                titlesRepo.findAllSummaries("Feature")
+                titlesRepo.findAllSummaries(types = *arrayOf("Feature"))
                         .test()
                         .expectNextCount(3)
                         .verifyComplete()
             },
+
             should("find 7 Titles of types: Feature, Season") {
-                titlesRepo.findAllSummaries("Feature", "Season")
+                titlesRepo.findAllSummaries(types = *arrayOf("Feature", "Season"))
                         .collectList()
                         .test()
                         .assertNext {
@@ -78,6 +77,92 @@ class TitleRepositoryTests {
                             }
                         }
                         .verifyComplete()
+            },
+
+            should("find 1 episode by terms") {
+                titlesRepo.findAllSummaries(terms = "\"All the Best Cowboys Have Daddy Issues\"")
+                        .test()
+                        .assertNext {
+                            assertThat(it is Episode).isTrue()
+                            assertThat(it.name).isEqualTo("All the Best Cowboys Have Daddy Issues")
+                        }
+                        .verifyComplete()
+            },
+
+            should("find 1 episode by id") {
+                titlesRepo.findAllSummaries(terms = "\"All the Best Cowboys Have Daddy Issues\"")
+                        .toMono()
+                        .flatMap { titlesRepo.findByIdWithParent(it.id!!) }
+                        .test()
+                        .assertNext {
+                            assertThat(it is Episode).isTrue()
+                            assertThat(it.name).isEqualTo("All the Best Cowboys Have Daddy Issues")
+                            assertThat((it as ChildTitle).parent).isNotNull()
+                            assertThat(it.parent!!.name).isEqualTo("Season 1")
+                        }
+                        .verifyComplete()
+            },
+
+            should("find 1 Series by id with Seasons") {
+                titlesRepo.findAllSummaries(terms = "\"Star Wars: Clone Wars\"")
+                        .toMono()
+                        .flatMap { titlesRepo.findByIdWithParent(it.id!!) }
+                        .test()
+                        .assertNext {
+                            assertThat(it is TvSeries).isTrue()
+                            assertThat(it.name).isEqualTo("Star Wars: Clone Wars")
+                            assertThat((it as TvSeries).seasons).isNotNull()
+                            assertThat(it.seasons!!).hasSize(2)
+                        }
+                        .verifyComplete()
+            },
+
+            should("find 1 Season by id with Episodes") {
+                titlesRepo.findAllSummaries(terms = "\"Volume 1\"")
+                        .toMono()
+                        .flatMap { titlesRepo.findByIdWithParent(it.id!!) }
+                        .test()
+                        .assertNext {
+                            assertThat(it is Season).isTrue()
+                            assertThat(it.name).isEqualTo("Volume 1")
+                            assertThat((it as Season).episodes).isNotNull()
+                            assertThat(it.episodes!!).hasSize(20)
+                        }
+                        .verifyComplete()
+            },
+
+            should(" create and update one title") {
+                titlesRepo.createTitle(Bonus(name = "Test Bonus Title").toMono())
+                        .flatMap { titlesRepo.findById(it.id!!) }
+                        .compose {
+                            titlesRepo.updateTitle(it.map {
+                                it.name = "Updated Test Bonus Title"
+                                it
+                            })
+                        }
+                        .flatMap { titlesRepo.findById(it.id!!) }
+                        .test()
+                        .assertNext {
+                            assertThat(it.name).isEqualTo("Updated Test Bonus Title")
+                        }
+                        .verifyComplete()
+            },
+
+            should(" create and delete one title") {
+                titlesRepo.createTitle(Bonus(name = "Test Bonus Title").toMono())
+                        .flatMap { titlesRepo.findById(it.id!!) }
+                        .flatMap {
+                            titlesRepo.deleteById(it.id!!).then(it.toMono())
+                        }
+                        .test()
+                        .assertNext {
+                            titlesRepo.findById(it.id!!)
+                                    .test()
+                                    .verifyComplete()
+                        }
+                        .verifyComplete()
             }
+
+
     )
 }

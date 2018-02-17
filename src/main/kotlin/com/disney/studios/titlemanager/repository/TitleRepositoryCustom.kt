@@ -8,5 +8,5 @@ interface TitleRepositoryCustom {
     fun findByIdWithParent(id: String): Mono<Title>
     fun createTitle(title: Mono<Title>): Mono<Title>
     fun updateTitle(title: Mono<Title>): Mono<Title>
-    fun findAllSummaries(vararg types:String): Flux<Title>
+    fun findAllSummaries(terms:String? = null, vararg types:String): Flux<Title>
 }

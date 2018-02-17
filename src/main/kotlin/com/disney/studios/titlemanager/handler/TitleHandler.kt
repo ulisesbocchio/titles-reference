@@ -1,15 +1,11 @@
 package com.disney.studios.titlemanager.handler
 
-import com.disney.studios.titlemanager.bodyToMono
+import com.disney.studios.titlemanager.*
 import com.disney.studios.titlemanager.document.*
-import com.disney.studios.titlemanager.json
-import com.disney.studios.titlemanager.minus
-import com.disney.studios.titlemanager.plus
 import com.disney.studios.titlemanager.repository.TitleRepository
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.BodyInserters.*
+import org.springframework.web.reactive.function.BodyInserters.fromObject
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.body
@@ -23,15 +19,8 @@ class TitleHandler(private val titleRepository: TitleRepository) {
                     .compose { okOrNotFound(it) }
 
     fun getAllTitles(request: ServerRequest) =
-            ServerResponse.ok().json().body(titleRepository.findAllSummaries(*getTypesParam(request)))
-
-    private fun getTypesParam(request: ServerRequest): Array<String> {
-        return request
-                .queryParam("type")
-                .map { it.split(',').toTypedArray() }
-                .orElse(emptyArray())
-    }
-
+            ServerResponse.ok().json().body(titleRepository
+                    .findAllSummaries(request.queryParam("terms").orElse(null), *request.queryParamValues("type")))
 
     fun createTitle(request: ServerRequest) = ServerResponse.ok().body(titleRepository.createTitle(request.bodyToMono()))
 

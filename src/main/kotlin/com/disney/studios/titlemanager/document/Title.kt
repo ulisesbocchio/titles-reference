@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id.*
 import org.springframework.core.style.ToStringCreator
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
+import org.springframework.data.mongodb.core.index.TextIndexed
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
@@ -38,12 +39,10 @@ interface VisitableTitle {
         Type(value = Episode::class, name = "Episode")
 )
 abstract class Title(
-        @Id
-        var id: String? = null,
-        var name: String? = null,
+        @Id var id: String? = null,
+        @TextIndexed var name: String? = null,
         var description: String? = null,
-        @DBRef
-        var bonuses: List<Bonus>? = null
+        @DBRef var bonuses: List<Bonus>? = null
 ) : VisitableTitle {
     open fun toStringCreator(): ToStringCreator {
         return ToStringCreator(this)

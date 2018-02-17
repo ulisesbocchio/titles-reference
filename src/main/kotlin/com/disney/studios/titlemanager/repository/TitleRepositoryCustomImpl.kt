@@ -9,11 +9,8 @@ import com.disney.studios.titlemanager.findOne
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.ReactiveMongoOperations
-import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.*
 import org.springframework.data.mongodb.core.query.Criteria.where
-import org.springframework.data.mongodb.core.query.Query
-import org.springframework.data.mongodb.core.query.inValues
-import org.springframework.data.mongodb.core.query.isEqualTo
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
 import reactor.core.publisher.Flux
@@ -22,7 +19,11 @@ import reactor.core.publisher.toMono
 
 class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperations) : TitleRepositoryCustom {
 
-    override fun findAllSummaries(vararg types: String): Flux<Title> = mongoOperations.find(Query().types(*types).noChildren())
+    override fun findAllSummaries(terms: String?, vararg types: String): Flux<Title> =
+            mongoOperations.find(Query()
+                    .types(*types)
+                    .matching(terms)
+                    .noChildren())
 
     override fun createTitle(title: Mono<Title>): Mono<Title> = mongoOperations.insert(title)
 
@@ -75,9 +76,17 @@ class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperat
         return this
     }
 
+    private fun Query.matching(terms: String?): Query {
+        if (terms != null) {
+            addCriteria(TextCriteria().matching(terms))
+        }
+        return this
+    }
+
     private fun classNameForType(type: String): String {
         val jsonTypes = findAnnotation<Title, JsonSubTypes>()
         val jsonType = jsonTypes.value.find { it.name.equals(type, true) }
-        return jsonType?.value?.qualifiedName ?: throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "Invalid Title type: $type")
+        return jsonType?.value?.qualifiedName
+                ?: throw HttpClientErrorException(HttpStatus.BAD_REQUEST, "Invalid Title type: $type")
     }
 }

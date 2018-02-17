@@ -44,3 +44,9 @@ operator fun <T> Collection<T>?.minus(element: T): List<T>? {
     return this?.filterTo(result) { if (!removed && it == element) { removed = true; false } else true }
 }
 
+fun ServerRequest.queryParamValues(name: String): Array<String> {
+    return queryParam(name)
+            .map { it.split(',').toTypedArray() }
+            .orElse(emptyArray())
+}
+
