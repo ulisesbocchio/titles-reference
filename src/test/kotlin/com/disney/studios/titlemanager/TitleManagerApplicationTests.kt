@@ -1,6 +1,10 @@
 package com.disney.studios.titlemanager
 
+import com.disney.studios.titlemanager.document.Feature
+import com.disney.studios.titlemanager.document.Season
 import com.disney.studios.titlemanager.document.Title
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.TestInstance
@@ -14,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDO
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.WebTestClient.ListBodySpec
 
 @SpringJUnitConfig(classes = [
     TitleManagerApplication::class,
@@ -43,6 +48,50 @@ class TitleManagerApplicationTests {
                         .exchange()
                         .expectBodyList(Title::class.java)
                         .hasSize(44)
+            },
+
+            should("find all pre-loaded Feature titles") {
+                client.get()
+                        .uri { it.path("/titles").queryParam("type", "Feature").build() }
+                        .exchange()
+                        .expectBodyList(Title::class.java)
+                        .hasSize(3)
+                        .consumeWith<ListBodySpec<Title>> {
+                            assertThat(it.responseBody).allSatisfy {
+                                it is Feature
+                            }
+                        }
+            },
+
+            should("find all pre-loaded Feature and Season titles") {
+                client.get()
+                        .uri { it.path("/titles").queryParam("type", "Feature,Season").build() }
+                        .exchange()
+                        .expectBodyList(Title::class.java)
+                        .hasSize(7)
+                        .consumeWith<ListBodySpec<Title>> {
+                            assertThat(it.responseBody).allSatisfy {
+                                it is Feature || it is Season
+                            }
+                        }
+            },
+
+            should("find Frozen by name restricted by Feature type") {
+                client.get()
+                        .uri {
+                            it.path("/titles")
+                                    .queryParam("type", "Feature")
+                                    .queryParam("terms", "Frozen")
+                                    .build()
+                        }
+                        .exchange()
+                        .expectBodyList(Title::class.java)
+                        .hasSize(1)
+                        .consumeWith<ListBodySpec<Title>> {
+                            assertThat(it.responseBody).allSatisfy {
+                                assertThat(it.name).isEqualTo("Frozen")
+                            }
+                        }
             }
     )
 }
