@@ -5,6 +5,9 @@ titles:
 spring:
   jackson:
     default-property-inclusion: non_null
+  data:
+    mongodb:
+      database: titleManager
 ---
 spring:
   profiles: compose

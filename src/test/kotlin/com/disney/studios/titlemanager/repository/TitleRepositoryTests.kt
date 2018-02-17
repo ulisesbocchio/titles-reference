@@ -23,7 +23,7 @@ import reactor.test.test
 class TitleRepositoryTests {
 
     @Autowired
-    lateinit var titlesRepo: TitleRepository
+    private lateinit var titlesRepo: TitleRepository
 
     @TestFactory
     fun titleRepository() = listOf(
@@ -148,19 +148,21 @@ class TitleRepositoryTests {
                         .verifyComplete()
             },
 
+            should("not find non-existent title") {
+                titlesRepo.findById("12345678900987654321abcd")
+                        .test()
+                        .verifyComplete()
+            },
+
             should(" create and delete one title") {
                 titlesRepo.createTitle(Bonus(name = "Test Bonus Title").toMono())
                         .flatMap { titlesRepo.findById(it.id!!) }
                         .flatMap {
-                            titlesRepo.deleteById(it.id!!).then(it.toMono())
+                            titlesRepo.deleteById(it.id!!).then(it.id.toMono())
                         }
+                        .compose { titlesRepo.findById(it) }
                         .test()
-                        .assertNext {
-                            titlesRepo.findById(it.id!!)
-                                    .test()
-                                    .verifyComplete()
-                        }
-                        .verifyComplete()
+                        .expectComplete()
             }
 
 
