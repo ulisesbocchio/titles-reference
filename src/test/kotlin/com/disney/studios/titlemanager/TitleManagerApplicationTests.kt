@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ListBodySpec
@@ -130,6 +129,21 @@ class TitleManagerApplicationTests {
                                     .expectStatus().isNotFound
 
                         }
+            },
+
+            should("not update non-existent title") {
+                client.put()
+                        .uri("titles/12345678900987654321abcd")
+                        .body(fromObject(Bonus()))
+                        .exchange()
+                        .expectStatus().isNotFound
+            },
+
+            should("not delete non-existent title") {
+                client.delete()
+                        .uri("titles/12345678900987654321abcd")
+                        .exchange()
+                        .expectStatus().isNotFound
             }
     )
 }

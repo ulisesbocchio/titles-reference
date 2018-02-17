@@ -154,6 +154,19 @@ class TitleRepositoryTests {
                         .verifyComplete()
             },
 
+            should("upsert non-existent title") {
+                titlesRepo.updateTitle(Bonus(id = "12345678900987654321abcd").toMono())
+                        .test()
+                        .assertNext {
+                            assertThat(it.id).isEqualTo("12345678900987654321abcd")
+                        }
+                        .verifyComplete()
+                titlesRepo.findById("12345678900987654321abcd")
+                        .test()
+                        .expectNextCount(1)
+                        .verifyComplete()
+            },
+
             should(" create and delete one title") {
                 titlesRepo.createTitle(Bonus(name = "Test Bonus Title").toMono())
                         .flatMap { titlesRepo.findById(it.id!!) }
