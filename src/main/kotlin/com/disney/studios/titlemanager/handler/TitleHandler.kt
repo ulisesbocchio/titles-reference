@@ -22,34 +22,34 @@ class TitleHandler(private val titleRepository: TitleRepository) {
             ServerResponse.ok().json().body(titleRepository
                     .findAllSummaries(request.queryParam("terms").orElse(null), *request.queryParamValues("type")))
 
-    fun createTitle(request: ServerRequest) = ServerResponse.ok().body(titleRepository.createTitle(request.bodyToMono()))
+    fun createTitle(request: ServerRequest) = ServerResponse.accepted().body(titleRepository.createTitle(request.bodyToMono()))
 
     fun updateTitle(request: ServerRequest) = titleRepository.findById(request.pathVariable("id"))
             .flatMap { it.accept(TitleUpdater(request.bodyToMono())) }
             .compose { titleRepository.updateTitle(it) }
-            .compose { okOrNotFound(it) }
+            .compose { acceptedOrNotFound(it) }
 
     fun deleteTitle(request: ServerRequest) =
             titleRepository.existsById(request.pathVariable("id"))
                     .flatMap {
                         if (it)
                             titleRepository.deleteById(request.pathVariable("id"))
-                                    .compose { ServerResponse.ok().json().body(fromObject(it)) }
+                                    .then(ServerResponse.accepted().json().body(fromObject(it)))
                         else ServerResponse.notFound().build()
-                    }.compose { okOrNotFound(it) }
+                    }
 
     fun addChild(request: ServerRequest) =
             titleRepository.findById(request.pathVariable("id"))
                     .zipWith(titleRepository.findById(request.pathVariable("childId")))
                     .map { addChild(it.t1, it.t2, request.pathVariable("childType")) }
                     .compose { titleRepository.updateTitle(it) }
-                    .compose { okOrNotFound(it) }
+                    .compose { acceptedOrNotFound(it) }
 
     fun deleteChild(request: ServerRequest) =
             titleRepository.findById(request.pathVariable("id"))
                     .map { deleteChild(it, request.pathVariable("childId"), request.pathVariable("childType")) }
                     .compose { titleRepository.updateTitle(it) }
-                    .compose { okOrNotFound(it) }
+                    .compose { acceptedOrNotFound(it) }
 
 
     private fun addChild(parent: Title, child: Title, childType: String): Title {
@@ -79,4 +79,7 @@ class TitleHandler(private val titleRepository: TitleRepository) {
 
     fun <T : Any> okOrNotFound(title: Mono<T>): Mono<ServerResponse> =
             title.flatMap { ServerResponse.ok().json().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
+
+    fun <T : Any> acceptedOrNotFound(title: Mono<T>): Mono<ServerResponse> =
+            title.flatMap { ServerResponse.accepted().json().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
 }
