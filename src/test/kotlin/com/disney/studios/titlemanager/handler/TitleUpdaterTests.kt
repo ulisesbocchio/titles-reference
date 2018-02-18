@@ -11,7 +11,7 @@ import com.nhaarman.mockito_kotlin.spy
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
-import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.toMono
 import reactor.test.StepVerifier
 
@@ -81,7 +81,8 @@ class TitleUpdaterTests {
                 update.id = "big no"
                 StepVerifier
                         .create(title.accept(TitleUpdater(update.toMono())))
-                        .expectError(HttpClientErrorException::class.java)
+                        .expectError(ServerWebInputException::class.java)
+                        .verify()
             }
     )
 }

@@ -2,8 +2,7 @@ package com.disney.studios.titlemanager.handler
 
 import com.disney.studios.titlemanager.cast
 import com.disney.studios.titlemanager.document.*
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
 
 class TitleUpdater(val update: Mono<Title>) : TitleVisitor<Mono<Title>> {
@@ -23,7 +22,7 @@ class TitleUpdater(val update: Mono<Title>) : TitleVisitor<Mono<Title>> {
                     title.parent = it.parent ?: title.parent
                     it as Title
                 }
-                .onErrorMap { badRequest() }
+                .onErrorMap { badRequest(title) }
     }
 
     override fun visit(title: Bonus): Mono<Title> {
@@ -33,7 +32,7 @@ class TitleUpdater(val update: Mono<Title>) : TitleVisitor<Mono<Title>> {
                     title.duration = it.duration ?: title.duration
                     title as Title
                 }
-                .onErrorMap { badRequest() }
+                .onErrorMap { badRequest(title) }
     }
 
     override fun visit(title: TvSeries): Mono<Title> {
@@ -44,7 +43,7 @@ class TitleUpdater(val update: Mono<Title>) : TitleVisitor<Mono<Title>> {
                     title.seasons = it.seasons ?: title.seasons
                     title as Title
                 }
-                .onErrorMap { badRequest() }
+                .onErrorMap { badRequest(title) }
     }
 
     override fun visit(title: Season): Mono<Title> {
@@ -55,7 +54,7 @@ class TitleUpdater(val update: Mono<Title>) : TitleVisitor<Mono<Title>> {
                     title.episodes = it.episodes ?: title.episodes
                     title as Title
                 }
-                .onErrorMap { badRequest() }
+                .onErrorMap { badRequest(title) }
     }
 
     override fun visit(title: Episode): Mono<Title> {
@@ -66,9 +65,10 @@ class TitleUpdater(val update: Mono<Title>) : TitleVisitor<Mono<Title>> {
                     title.duration = it.duration ?: title.duration
                     title as Title
                 }
-                .onErrorMap { badRequest() }
+                .onErrorMap { badRequest(title) }
     }
 
-    private fun badRequest() = HttpClientErrorException(HttpStatus.BAD_REQUEST)
+    private fun badRequest(title: Title) =
+            ServerWebInputException("Incompatible update type: '${update.block()::class.simpleName}' for title type: '${title::class.simpleName}'")
 
 }
