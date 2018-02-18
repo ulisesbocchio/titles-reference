@@ -1,7 +1,4 @@
-# Title Manager
-Reactive Spring Boot 2.0 Kotlin Reference implementation of the Studio Technology Interview Challenge
-
-# Challenge
+# Title Manager Challenge
 
 ## Problem Statement
 Implement and test in any language a working RESTful API to create, retrieve, update and delete Walt Disney Studios titles metadata for Feature, TV and Bonus content. For the retrieve operation, include capabilities to filter by Title Type (Bonus, Episode, Season, TV Series, and Feature).
@@ -22,6 +19,14 @@ A zip/rar/tar file (or public github/gitlab repo URL) that contains the source c
 - Relationship retrieval (how season/episodic/bonus is represented in responses and what level)
 
 # Implementation
+
+## Tech Stack
+
+- Kotlin
+- Spring Boot 2.0
+- Spring Webflux
+- MongoDB
+- Docker
 
 ## Test, Build and Run
 
