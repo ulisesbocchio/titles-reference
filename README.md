@@ -9,6 +9,8 @@ Use the following diagram and the provided JSON file with bulk data for referenc
 
 ![class hierarchy](https://raw.githubusercontent.com/ulisesbocchio/titles-reference/master/hierarchy.png)
 
+This diagram and the JSON file are for guidance purposes only. It is not required to implement exactly the above class hierarchy.
+
 ### Deliverables
 A zip/rar/tar file (or public github/gitlab repo URL) that contains the source code and a README file with instructions on how to Build, Test and Run the Application and a description of the implemented endpoints and how they are used.
 
