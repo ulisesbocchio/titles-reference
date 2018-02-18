@@ -7,10 +7,10 @@ Reactive Spring Boot 2.0 Kotlin Reference implementation
 Implement and test in any language a working RESTful API to create, retrieve, update and delete Walt Disney Studios titles metadata for Feature, TV and Bonus content. For the retrieve operation, include capabilities to filter by Title Type (Bonus, Episode, Season, TV Series, and Feature).
 Use the following diagram and the provided JSON file with bulk data for reference:
 
+![class hierarchy](https://raw.githubusercontent.com/ulisesbocchio/titles-reference/master/hierarchy.png)
+
 ### Deliverables
 A zip/rar/tar file (or public github/gitlab repo URL) that contains the source code and a README file with instructions on how to Build, Test and Run the Application and a description of the implemented endpoints and how they are used.
-
-![class hierarchy](https://raw.githubusercontent.com/ulisesbocchio/titles-reference/master/hierarchy.png)
 
 ### Metrics (For Reviewers)
 - Setup/bootstrap
@@ -18,7 +18,6 @@ A zip/rar/tar file (or public github/gitlab repo URL) that contains the source c
 - Endpoint organization/pattern
 - Relationship representation/persistence/validation
 - Relationship retrieval (how season/episodic/bonus is represented in responses and what level)
-
 
 ## Test, Build and Run
 
