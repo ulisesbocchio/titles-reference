@@ -63,6 +63,10 @@ Running the app standalone requires MongoDB running on localhost:27017
 
 ### GET /titles
 Returns all titles. Response includes plain Title metadata (no parent or child titles)
+This endpoint accepts query params:
+- `type`: comma-separate Title types to filter results (`Bonus`, `Feature`, `TV Series`, `Season`, or `Episode` are valid options)
+- `terms`: word(s) or phrase to filter titles by. Filter applies to Title name only.
+
 Sample Response:
 ```json
 [
