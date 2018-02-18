@@ -95,7 +95,7 @@ class TitleRepositoryTests {
                         .flatMap { titlesRepo.findByIdWithParent(it.id!!) }
                         .test()
                         .assertNext {
-                            assertThat(it is Episode).isTrue()
+                            assertThat(it).matches{ it is Episode }
                             assertThat(it.name).isEqualTo("All the Best Cowboys Have Daddy Issues")
                             assertThat((it as ChildTitle).parent).isNotNull()
                             assertThat(it.parent!!.name).isEqualTo("Season 1")

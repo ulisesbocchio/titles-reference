@@ -13,4 +13,6 @@ inline fun <reified T : Any> ResponseSpec.expectBodyList(): ListBodySpec<T> = ex
 
 inline fun <reified T : Any> ResponseSpec.expectBody(): BodySpec<T, *> = expectBody(T::class.java)
 
-fun <T : Any> BodySpec<T, *>.satisfies(consumer: (T) -> Unit) = Assertions.assertThat(returnResult().responseBody).satisfies(consumer)
+fun <T : Any> BodySpec<T, *>.satisfies(consumer: (T) -> Unit) = Assertions.assertThat(returnResult().responseBody!!).satisfies(consumer)
+
+fun <T : Any> ListBodySpec<T>.allSatisfy(consumer: (T) -> Unit) = consumeWith<ListBodySpec<T>> { Assertions.assertThat(it.responseBody!!).allSatisfy(consumer) }

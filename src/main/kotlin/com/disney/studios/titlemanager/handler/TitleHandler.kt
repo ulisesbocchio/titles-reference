@@ -19,7 +19,7 @@ class TitleHandler(private val titleRepository: TitleRepository) {
                     .compose { okOrNotFound(it) }
 
     fun getAllTitles(request: ServerRequest) =
-            ServerResponse.ok().json().body(titleRepository
+            ServerResponse.ok().body(titleRepository
                     .findAllSummaries(request.queryParam("terms").orElse(null), *request.queryParamValues("type")))
 
     fun createTitle(request: ServerRequest) = ServerResponse.accepted().body(titleRepository.createTitle(request.bodyToMono()))
@@ -34,7 +34,7 @@ class TitleHandler(private val titleRepository: TitleRepository) {
                     .flatMap {
                         if (it)
                             titleRepository.deleteById(request.pathVariable("id"))
-                                    .then(ServerResponse.accepted().json().body(fromObject(it)))
+                                    .then(ServerResponse.accepted().body(fromObject(it)))
                         else ServerResponse.notFound().build()
                     }
 
@@ -78,8 +78,8 @@ class TitleHandler(private val titleRepository: TitleRepository) {
     }
 
     fun <T : Any> okOrNotFound(title: Mono<T>): Mono<ServerResponse> =
-            title.flatMap { ServerResponse.ok().json().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
+            title.flatMap { ServerResponse.ok().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
 
     fun <T : Any> acceptedOrNotFound(title: Mono<T>): Mono<ServerResponse> =
-            title.flatMap { ServerResponse.accepted().json().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
+            title.flatMap { ServerResponse.accepted().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
 }
