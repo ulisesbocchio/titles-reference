@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.WebTestClient.ListBodySpec
 import org.springframework.web.reactive.function.BodyInserters.fromObject
+import reactor.core.publisher.toMono
 
 @SpringJUnitConfig(classes = [
     TitleManagerApplication::class,
@@ -438,6 +439,26 @@ class TitleManagerApplicationTests {
                                     .uri("titles/${series.id}/seasons/12345678900987654321abcd")
                                     .exchange()
                                     .expectStatus().isNotFound
+                        }
+            },
+
+            should("fail trying to update TV Series with Bonus title") {
+                client.get()
+                        .uri {
+                            it.path("/titles")
+                                    .queryParam("terms", "\"Star Wars: Clone Wars\"")
+                                    .build()
+                        }
+                        .exchange()
+                        .expectBodyList<TvSeries>()
+                        .hasSize(1)
+                        .allSatisfy { series ->
+
+                            client.put()
+                                    .uri("titles/${series.id}")
+                                    .body(fromObject(Bonus(name = "Boom!")))
+                                    .exchange()
+                                    .expectStatus().isBadRequest
                         }
             }
     )

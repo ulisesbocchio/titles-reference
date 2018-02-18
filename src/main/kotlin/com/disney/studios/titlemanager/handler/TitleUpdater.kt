@@ -69,6 +69,6 @@ class TitleUpdater(val update: Mono<Title>) : TitleVisitor<Mono<Title>> {
     }
 
     private fun badRequest(title: Title) =
-            ServerWebInputException("Incompatible update type: '${update.block()::class.simpleName}' for title type: '${title::class.simpleName}'")
+            ServerWebInputException("Incompatible update type for title type: '${title::class.simpleName}'")
 
 }
