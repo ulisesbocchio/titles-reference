@@ -1,14 +1,16 @@
 package com.disney.studios.titlemanager.handler
 
-import com.disney.studios.titlemanager.*
+import com.disney.studios.titlemanager.bodyToMono
 import com.disney.studios.titlemanager.document.*
+import com.disney.studios.titlemanager.minus
+import com.disney.studios.titlemanager.plus
+import com.disney.studios.titlemanager.queryParamValues
 import com.disney.studios.titlemanager.repository.TitleRepository
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.reactive.function.BodyInserters.fromObject
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.body
+import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
 
@@ -57,7 +59,7 @@ class TitleHandler(private val titleRepository: TitleRepository) {
             "bonuses" -> doWhen(child, Bonus::class) { parent.bonuses += it }
             "seasons" -> doWhen(parent, TvSeries::class) { series -> doWhen(child, Season::class) { series.seasons += it } }
             "episodes" -> doWhen(parent, Season::class) { season -> doWhen(child, Episode::class) { season.episodes += it } }
-            else -> throw HttpClientErrorException(HttpStatus.BAD_REQUEST)
+            else -> throw ServerWebInputException("Invalid child type: $childType")
         }
         return parent
     }
@@ -68,13 +70,13 @@ class TitleHandler(private val titleRepository: TitleRepository) {
             "bonuses" -> parent.bonuses -= Bonus(childId)
             "seasons" -> doWhen(parent, TvSeries::class) { it.seasons -= Season(childId) }
             "episodes" -> doWhen(parent, Season::class) { it.episodes -= Episode(childId) }
-            else -> throw HttpClientErrorException(HttpStatus.BAD_REQUEST)
+            else -> throw ServerWebInputException("Invalid child type: $childType")
         }
         return parent
     }
 
     private inline fun <reified T : Any> doWhen(title: Title, clazz: KClass<T>, doFn: (T) -> Unit) {
-        if (title is T) doFn(title) else HttpClientErrorException(HttpStatus.BAD_REQUEST)
+        if (title is T) doFn(title) else throw ServerWebInputException("Incompatible child type: ${clazz.simpleName}")
     }
 
     fun <T : Any> okOrNotFound(title: Mono<T>): Mono<ServerResponse> =

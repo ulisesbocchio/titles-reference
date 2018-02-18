@@ -366,6 +366,52 @@ class TitleManagerApplicationTests {
                                         assertThat(it.parent).isNull()
                                     }
                         }
+            },
+
+            should("fail trying to add unknown children type to Title") {
+                client.get()
+                        .uri {
+                            it.path("/titles")
+                                    .queryParam("terms", "\"Star Wars: Clone Wars\"")
+                                    .build()
+                        }
+                        .exchange()
+                        .expectBodyList<TvSeries>()
+                        .hasSize(1)
+                        .allSatisfy { series ->
+
+                            val newSeason = client.post()
+                                    .uri("/titles")
+                                    .body(fromObject(Season(name = "Test Season")))
+                                    .exchange()
+                                    .expectBody<Season>()
+                                    .returnResult()
+                                    .responseBody!!
+
+                            client.put()
+                                    .uri("titles/${series.id}/something/${newSeason.id}")
+                                    .exchange()
+                                    .expectStatus().isBadRequest
+                        }
+            },
+
+            should("fail trying to add non-existent season to TV Series") {
+                client.get()
+                        .uri {
+                            it.path("/titles")
+                                    .queryParam("terms", "\"Star Wars: Clone Wars\"")
+                                    .build()
+                        }
+                        .exchange()
+                        .expectBodyList<TvSeries>()
+                        .hasSize(1)
+                        .allSatisfy { series ->
+
+                            client.put()
+                                    .uri("titles/${series.id}/seasons/12345678900987654321abcd")
+                                    .exchange()
+                                    .expectStatus().isNotFound
+                        }
             }
     )
 }
