@@ -1,9 +1,9 @@
 # Title Manager
-Reactive Spring Boot 2.0 Kotlin Reference implementation
+Reactive Spring Boot 2.0 Kotlin Reference implementation of the Studio Technology Interview Challenge
 
-## Challenge
+# Challenge
 
-### Problem Statement
+## Problem Statement
 Implement and test in any language a working RESTful API to create, retrieve, update and delete Walt Disney Studios titles metadata for Feature, TV and Bonus content. For the retrieve operation, include capabilities to filter by Title Type (Bonus, Episode, Season, TV Series, and Feature).
 Use the following diagram and the provided JSON file with bulk data for reference:
 
@@ -11,15 +11,17 @@ Use the following diagram and the provided JSON file with bulk data for referenc
 
 This diagram and the JSON file are for guidance purposes only. It is not required to implement exactly the above class hierarchy.
 
-### Deliverables
+## Deliverables
 A zip/rar/tar file (or public github/gitlab repo URL) that contains the source code and a README file with instructions on how to Build, Test and Run the Application and a description of the implemented endpoints and how they are used.
 
-### Metrics (For Reviewers)
+## Metrics (For Reviewers)
 - Setup/bootstrap
 - Testing
 - Endpoint organization/pattern
 - Relationship representation/persistence/validation
 - Relationship retrieval (how season/episodic/bonus is represented in responses and what level)
+
+# Implementation
 
 ## Test, Build and Run
 
@@ -76,7 +78,7 @@ Sample Response:
 ]
 ```
 
-## POST /titles
+### POST /titles
 Creates a Title. Body Sample:
 
 ```json
