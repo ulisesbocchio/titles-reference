@@ -61,7 +61,7 @@ Running the app standalone requires MongoDB running on localhost:27017
 
 ## API Reference
 
-### GET /titles
+### `GET /titles`
 Returns all titles. Response includes plain Title metadata (no parent or child titles).
 
 This endpoint accepts query params:
@@ -88,7 +88,7 @@ Sample Response:
 ]
 ```
 
-### POST /titles
+### `POST /titles`
 Creates a Title. Body Sample:
 
 ```json
@@ -101,7 +101,7 @@ Creates a Title. Body Sample:
 ```
 Where `type` is required.
 
-### GET /titles/{id}
+### `GET /titles/{id}`
 Returns a title by ID. Response includes parent and child Titles.
 
 Sample Response:
@@ -153,7 +153,7 @@ Sample Response:
 }
 ```
 
-### PUT /titles/{id}
+### `PUT /titles/{id}`
 Updates a Title by ID.
 
 Body Sample:
@@ -168,7 +168,7 @@ Body Sample:
 ```
 Where `type` is required.
 
-### DELETE /titles/{id}
+### `DELETE /titles/{id}`
 Deletes a Title.
 
 For instance:
@@ -177,7 +177,7 @@ DELETE /titles/123
 ```
 Would remove Title `321`
 
-### PUT /titles/{id}/{childType}/{childId}
+### `PUT /titles/{id}/{childType}/{childId}`
 Adds a child of a given type to a given Title.
 
 For instance:
@@ -187,7 +187,7 @@ PUT /titles/123/episodes/321
 Would add Episode `321` to TV Series `123`
 
 
-### DELETE /titles/{id}/{childType}/{childId}
+### `DELETE /titles/{id}/{childType}/{childId}`
 Removes a child of a given type to a given Title.
 
 For instance:
