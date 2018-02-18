@@ -395,6 +395,33 @@ class TitleManagerApplicationTests {
                         }
             },
 
+            should("fail trying to add incorrect children type to Title") {
+                client.get()
+                        .uri {
+                            it.path("/titles")
+                                    .queryParam("terms", "\"Star Wars: Clone Wars\"")
+                                    .build()
+                        }
+                        .exchange()
+                        .expectBodyList<TvSeries>()
+                        .hasSize(1)
+                        .allSatisfy { series ->
+
+                            val newSeason = client.post()
+                                    .uri("/titles")
+                                    .body(fromObject(Season(name = "Test Season")))
+                                    .exchange()
+                                    .expectBody<Season>()
+                                    .returnResult()
+                                    .responseBody!!
+
+                            client.put()
+                                    .uri("titles/${series.id}/bonuses/${newSeason.id}")
+                                    .exchange()
+                                    .expectStatus().isBadRequest
+                        }
+            },
+
             should("fail trying to add non-existent season to TV Series") {
                 client.get()
                         .uri {
