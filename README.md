@@ -56,7 +56,7 @@ Run the app in a docker-compose environment
 ./gradlew composeUp
 
 ``` 
-### Start standalon 
+### Start standalone 
 Running the app standalone requires MongoDB running on localhost:27017
 ````bash
 ./gradlew bootRun
