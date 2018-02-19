@@ -33,7 +33,7 @@ A zip/rar/tar file (or public github/gitlab repo URL) that contains the source c
 
 ## Test, Build and Run
 
-###  In one step
+###  Test, Build and Run in one step
 ```bash
 ./gradlew build docker composeUp
 ```
