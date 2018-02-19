@@ -25,8 +25,11 @@ A zip/rar/tar file (or public github/gitlab repo URL) that contains the source c
 - Kotlin
 - Spring Boot 2.0
 - Spring Webflux
+- Spring Data MongoDB
 - MongoDB
 - Docker
+- Gradle
+- JUnit 5
 
 ## Test, Build and Run
 
