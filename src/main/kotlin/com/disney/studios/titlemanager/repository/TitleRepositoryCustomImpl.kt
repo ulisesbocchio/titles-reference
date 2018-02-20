@@ -13,6 +13,9 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
+/**
+ * Spring Data MongoDB Repository extension implementation
+ */
 class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperations) : TitleRepositoryCustom {
 
     override fun findAllSummaries(terms: String?, vararg types: String): Flux<Title> =

@@ -17,6 +17,18 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext
 import org.springframework.web.reactive.function.server.router
 
 @SpringBootApplication
+/**
+ * Title Manager Spring's configuration class.
+ *
+ * @property titleLoader is used to bootstrap MongoDB with provided titles.json data.
+ *
+ * @property titleHandler contains API endpoint handlers.
+ *
+ * @property mappingMongoConverter is used to override default *_class* attribute in MongoDB docs to use *type* attribute.
+ *
+ * @property appRoutes contains API request mappings.
+ *
+ */
 class TitleManagerApplication {
 
     @Bean
@@ -53,6 +65,9 @@ class TitleManagerApplication {
 
 }
 
+/**
+ * Spring Boot app bootstrap
+ */
 fun main(args: Array<String>) {
     SpringApplicationBuilder()
             .sources(TitleManagerApplication::class.java)

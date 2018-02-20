@@ -18,6 +18,10 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
+/**
+ * [ApplicationRunner] that clears all titles from MongoDB, inserts all titles from provided JSON file, and prints them
+ * all out to the application's log.
+ */
 class TitleLoader(private val titleRepo: TitleRepository, private val titlesLocation: String) : ApplicationRunner {
 
     private val LOG = LoggerFactory.getLogger(TitleLoader::class.java)

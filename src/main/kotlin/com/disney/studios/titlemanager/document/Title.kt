@@ -16,111 +16,79 @@ import org.springframework.data.mongodb.core.index.TextIndexed
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
+import kotlin.reflect.KMutableProperty
+import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.memberProperties
 
+/**
+ * Visitor interface for Title, for things such as: update
+ */
 interface TitleVisitor<out T> {
-    fun visit(title: Title): T
-    fun visit(title: ChildTitle): T
     fun visit(title: Bonus): T
     fun visit(title: TvSeries): T
     fun visit(title: Season): T
     fun visit(title: Episode): T
+    fun visit(title: Feature): T
 }
 
+/**
+ * Visitable interface to be implemented by concrete Titles to accept visitors
+ */
 interface VisitableTitle {
     fun <T> accept(visitor: TitleVisitor<T>): T
 }
 
 @Document(collection = "titles")
-@JsonTypeInfo(
-        use = NAME,
-        include = As.PROPERTY,
-        property = "type")
-@JsonSubTypes(
-        Type(value = Bonus::class),
-        Type(value = Feature::class),
-        Type(value = TvSeries::class),
-        Type(value = Season::class),
-        Type(value = Episode::class)
-)
-@CompoundIndexes(
-        CompoundIndex(def ="{ type: 1 }")
-)
+@JsonTypeInfo(use = NAME, include = As.PROPERTY, property = "type")
+@JsonSubTypes(Type(Bonus::class), Type(Feature::class), Type(TvSeries::class), Type(Season::class), Type(Episode::class))
+@CompoundIndexes(CompoundIndex(def = "{ type: 1 }"))
+/**
+ * Base Title with common properties
+ */
 abstract class Title(
-        @Id var id: String? = null,
+        id: String? = null,
         @TextIndexed var name: String? = null,
         var description: String? = null,
-        @DBRef var bonuses: List<Bonus>? = null
-) : VisitableTitle {
-    open fun toStringCreator(): ToStringCreator {
-        return ToStringCreator(this)
-                .append("id", id)
-                .append("name", name)
-                .append("description", description)
-                .append("bonuses", bonuses)
-    }
-
-    override fun <T> accept(visitor: TitleVisitor<T>): T {
-        return visitor.visit(this)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Title
-
-        if (id != other.id) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return id?.hashCode() ?: 0
-    }
-
-
-}
+        @DBRef open var bonuses: List<Bonus>? = null
+) : BaseDoc(id), VisitableTitle
 
 abstract class ChildTitle(
         id: String? = null,
         name: String? = null,
         description: String? = null,
-        bonuses: List<Bonus>? = null
+        bonuses: List<Bonus>? = null,
+        @Transient var parent: Title? = null
 ) : Title(id, name, description, bonuses) {
-    @Transient
-    var parent: Title? = null
 
-    override fun toStringCreator(): ToStringCreator {
-        return super.toStringCreator()
-                .append("parent", parent?.id);
-    }
+    override fun propertyToString(name: String, value: Any?): Any? = if (name == "parent") parent?.id else value
 
-    override fun <T> accept(visitor: TitleVisitor<T>): T {
-        return visitor.visit(this)
-    }
 }
 
 @TypeAlias("Bonus")
 @JsonTypeName("Bonus")
+/**
+ * Bonus Title
+ */
 open class Bonus(
         id: String? = null,
         name: String? = null,
         description: String? = null,
         var duration: String? = null
-) : ChildTitle(id, name, description, null) {
-    override fun toString(): String {
-        return toStringCreator()
-                .append("duration", duration)
-                .toString()
-    }
+) : ChildTitle(id, name, description) {
 
-    override fun <T> accept(visitor: TitleVisitor<T>): T {
-        return visitor.visit(this)
-    }
+    override var bonuses: List<Bonus>?
+        get() = null
+        set(value) {}
+
+    override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
+
 }
 
 @TypeAlias("Feature")
 @JsonTypeName("Feature")
+/**
+ * Feature Title
+ */
 class Feature(
         id: String? = null,
         name: String? = null,
@@ -129,20 +97,16 @@ class Feature(
         var theatricalReleaseDate: Date? = null,
         var duration: String? = null
 ) : Title(id, name, description, bonuses) {
-    override fun toString(): String {
-        return toStringCreator()
-                .append("theatricalReleaseDate", theatricalReleaseDate)
-                .append("duration", duration)
-                .toString()
-    }
 
-    override fun <T> accept(visitor: TitleVisitor<T>): T {
-        return visitor.visit(this)
-    }
+    override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
+
 }
 
 @TypeAlias("TV Series")
 @JsonTypeName("TV Series")
+/**
+ * TV Series Title
+ */
 class TvSeries(
         id: String? = null,
         name: String? = null,
@@ -152,20 +116,16 @@ class TvSeries(
         @DBRef
         var seasons: List<Season>? = null
 ) : Title(id, name, description, bonuses) {
-    override fun toString(): String {
-        return toStringCreator()
-                .append("releaseDate", releaseDate)
-                .append("seasons", seasons)
-                .toString()
-    }
 
-    override fun <T> accept(visitor: TitleVisitor<T>): T {
-        return visitor.visit(this)
-    }
+    override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
+
 }
 
 @TypeAlias("Season")
 @JsonTypeName("Season")
+/**
+ * Season Title
+ */
 class Season(
         id: String? = null,
         name: String? = null,
@@ -175,20 +135,16 @@ class Season(
         @DBRef
         var episodes: List<Episode>? = null
 ) : ChildTitle(id, name, description, bonuses) {
-    override fun toString(): String {
-        return toStringCreator()
-                .append("releaseDate", releaseDate)
-                .append("episodes", episodes)
-                .toString()
-    }
 
-    override fun <T> accept(visitor: TitleVisitor<T>): T {
-        return visitor.visit(this)
-    }
+    override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
+
 }
 
 @TypeAlias("Episode")
 @JsonTypeName("Episode")
+/**
+ * Episode Title
+ */
 class Episode(
         id: String? = null,
         name: String? = null,
@@ -197,14 +153,45 @@ class Episode(
         var releaseDate: Date? = null,
         var duration: String? = null
 ) : ChildTitle(id, name, description, bonuses) {
+
+    override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
+
+}
+
+/**
+ * Base class for Mongo documents with String Id, toString, equals, hashCode, and copy for mutable properties
+ */
+abstract class BaseDoc(
+        @Id var id: String? = null
+) {
     override fun toString(): String {
-        return toStringCreator()
-                .append("releaseDate", releaseDate)
-                .append("duration", duration)
-                .toString()
+        return this.javaClass.kotlin.memberProperties
+                .fold(ToStringCreator(this)) { acc, property ->
+                    acc.append(property.name, propertyToString(property.name, property.get(this)))
+                }.toString()
     }
 
-    override fun <T> accept(visitor: TitleVisitor<T>): T {
-        return visitor.visit(this)
+    inline fun <reified T : Title> copy(): T {
+        return T::class.java.kotlin.memberProperties
+                .fold(T::class.createInstance(), { copy, property ->
+                    if (property is KMutableProperty<*>) {
+                        property.setter.call(copy, property.get(this as T))
+                    }
+                    copy
+                })
+    }
+
+    open fun propertyToString(name: String, value: Any?): Any? = value
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as Title
+        if (id != other.id) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id?.hashCode() ?: 0
     }
 }
