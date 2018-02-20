@@ -65,7 +65,7 @@ class TitleUpdaterTests {
 
             should("update Bonus with Bonus") {
 
-                val title = Bonus()
+                val bonus = Bonus()
                 val update = Bonus(
                         name = "Frozen",
                         description = "Anna and her sister run around freezing things",
@@ -74,12 +74,35 @@ class TitleUpdaterTests {
                 )
                 update.bonuses = listOf(Bonus())
                 StepVerifier
+                        .create(bonus.accept(TitleUpdater(update.toMono())))
+                        .assertNext {
+                            assertThat(bonus.id).isNull()
+                            assertThat(bonus.name).isEqualTo(update.name)
+                            assertThat(bonus.description).isEqualTo(update.description)
+                            assertThat(bonus.duration).isEqualTo(update.duration)
+                            assertThat(bonus.bonuses).isNull()
+                        }
+                        .verifyComplete()
+            },
+
+            should("not update Bonus fields not present in update Bonus") {
+
+                val update = Bonus()
+                val title = Bonus(
+                        name = "Frozen",
+                        description = "Anna and her sister run around freezing things",
+                        duration = "100 min",
+                        id = "big no"
+                )
+                update.bonuses = listOf(Bonus())
+                val titleCopy = title.copy<Bonus>()
+                StepVerifier
                         .create(title.accept(TitleUpdater(update.toMono())))
                         .assertNext {
-                            assertThat(title.id).isNull()
-                            assertThat(title.name).isEqualTo(update.name)
-                            assertThat(title.description).isEqualTo(update.description)
-                            assertThat(title.duration).isEqualTo(update.duration)
+                            assertThat(title.id).isEqualTo(titleCopy.id)
+                            assertThat(title.name).isEqualTo(titleCopy.name)
+                            assertThat(title.description).isEqualTo(titleCopy.description)
+                            assertThat(title.duration).isEqualTo(titleCopy.duration)
                             assertThat(title.bonuses).isNull()
                         }
                         .verifyComplete()
@@ -110,6 +133,32 @@ class TitleUpdaterTests {
                         .verifyComplete()
             },
 
+            should("not update TvSeries fields not present in update TvSeries") {
+                val bonus = Bonus()
+                val season = Season()
+                val update = TvSeries()
+                val title = TvSeries(
+                        name = "Frozen",
+                        description = "Anna and her sister run around freezing things",
+                        releaseDate = date("2018-02-13"),
+                        id = "big no",
+                        seasons = listOf(season),
+                        bonuses = listOf(bonus)
+                )
+                val titleCopy = title.copy<TvSeries>()
+                StepVerifier
+                        .create(title.accept(TitleUpdater(update.toMono())))
+                        .assertNext {
+                            assertThat(title.id).isEqualTo(titleCopy.id)
+                            assertThat(title.name).isEqualTo(titleCopy.name)
+                            assertThat(title.description).isEqualTo(titleCopy.description)
+                            assertThat(title.releaseDate).isEqualTo(titleCopy.releaseDate)
+                            assertThat(title.seasons).isEqualTo(titleCopy.seasons)
+                            assertThat(title.bonuses).isEqualTo(titleCopy.bonuses)
+                        }
+                        .verifyComplete()
+            },
+
             should("update Season with Season") {
                 val bonus = Bonus()
                 val episode = Episode()
@@ -135,6 +184,32 @@ class TitleUpdaterTests {
                         .verifyComplete()
             },
 
+            should("not update Season fields not present in update Season") {
+                val bonus = Bonus()
+                val episode = Episode()
+                val update = Season()
+                val title = Season(
+                        name = "Frozen",
+                        description = "Anna and her sister run around freezing things",
+                        releaseDate = date("2018-02-13"),
+                        id = "big no",
+                        episodes = listOf(episode),
+                        bonuses = listOf(bonus)
+                )
+                val titleCopy = title.copy<Season>()
+                StepVerifier
+                        .create(title.accept(TitleUpdater(update.toMono())))
+                        .assertNext {
+                            assertThat(title.id).isEqualTo(titleCopy.id)
+                            assertThat(title.name).isEqualTo(titleCopy.name)
+                            assertThat(title.description).isEqualTo(titleCopy.description)
+                            assertThat(title.releaseDate).isEqualTo(titleCopy.releaseDate)
+                            assertThat(title.episodes).isEqualTo(titleCopy.episodes)
+                            assertThat(title.bonuses).isEqualTo(titleCopy.bonuses)
+                        }
+                        .verifyComplete()
+            },
+
             should("update Feature with Feature") {
                 val bonus = Bonus()
                 val title = Feature()
@@ -154,6 +229,30 @@ class TitleUpdaterTests {
                             assertThat(title.description).isEqualTo(update.description)
                             assertThat(title.theatricalReleaseDate).isEqualTo(update.theatricalReleaseDate)
                             assertThat(title.bonuses).containsExactly(bonus)
+                        }
+                        .verifyComplete()
+            },
+
+            should("not update Feature feature fields not present in update Feature") {
+                val bonus = Bonus()
+                val update = Feature()
+                val title = Feature(
+                        name = "Frozen",
+                        description = "Anna and her sister run around freezing things",
+                        duration = "100 min",
+                        theatricalReleaseDate = date("2018-02-13"),
+                        id = "big no",
+                        bonuses = listOf(bonus)
+                )
+                val titleCopy = title.copy<Feature>()
+                StepVerifier
+                        .create(title.accept(TitleUpdater(update.toMono())))
+                        .assertNext {
+                            assertThat(title.id).isEqualTo(titleCopy.id)
+                            assertThat(title.name).isEqualTo(titleCopy.name)
+                            assertThat(title.description).isEqualTo(titleCopy.description)
+                            assertThat(title.theatricalReleaseDate).isEqualTo(titleCopy.theatricalReleaseDate)
+                            assertThat(title.bonuses).isEqualTo(titleCopy.bonuses)
                         }
                         .verifyComplete()
             },
