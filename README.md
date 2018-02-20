@@ -51,11 +51,18 @@ Run Spring Integration Tests
 ````
 
 ### Start in container
-Run the app in a docker-compose environment
+Run the app in a docker-compose environment (detached)
 ```bash
 ./gradlew composeUp
 
+```
+Use:
+```bash
+./gradlew composeDown
+
 ``` 
+to stop it
+
 ### Start standalone 
 Running the app standalone requires MongoDB running on localhost:27017
 ````bash
