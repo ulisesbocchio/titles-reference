@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.toMono
-import reactor.test.StepVerifier
+import reactor.test.test
 
 class TitleUpdaterTests {
     @TestFactory
@@ -25,8 +25,8 @@ class TitleUpdaterTests {
                         id = "big no",
                         bonuses = listOf(bonus)
                 )
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isNull()
                             assertThat(title.name).isEqualTo(update.name)
@@ -50,8 +50,8 @@ class TitleUpdaterTests {
                         bonuses = listOf(bonus)
                 )
                 val titleCopy = title.copy<Episode>()
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isEqualTo(titleCopy.id)
                             assertThat(title.name).isEqualTo(titleCopy.name)
@@ -65,7 +65,7 @@ class TitleUpdaterTests {
 
             should("update Bonus with Bonus") {
 
-                val bonus = Bonus()
+                val title = Bonus()
                 val update = Bonus(
                         name = "Frozen",
                         description = "Anna and her sister run around freezing things",
@@ -73,14 +73,14 @@ class TitleUpdaterTests {
                         id = "big no"
                 )
                 update.bonuses = listOf(Bonus())
-                StepVerifier
-                        .create(bonus.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
-                            assertThat(bonus.id).isNull()
-                            assertThat(bonus.name).isEqualTo(update.name)
-                            assertThat(bonus.description).isEqualTo(update.description)
-                            assertThat(bonus.duration).isEqualTo(update.duration)
-                            assertThat(bonus.bonuses).isNull()
+                            assertThat(title.id).isNull()
+                            assertThat(title.name).isEqualTo(update.name)
+                            assertThat(title.description).isEqualTo(update.description)
+                            assertThat(title.duration).isEqualTo(update.duration)
+                            assertThat(title.bonuses).isNull()
                         }
                         .verifyComplete()
             },
@@ -96,8 +96,8 @@ class TitleUpdaterTests {
                 )
                 update.bonuses = listOf(Bonus())
                 val titleCopy = title.copy<Bonus>()
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isEqualTo(titleCopy.id)
                             assertThat(title.name).isEqualTo(titleCopy.name)
@@ -120,8 +120,8 @@ class TitleUpdaterTests {
                         seasons = listOf(season),
                         bonuses = listOf(bonus)
                 )
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isNull()
                             assertThat(title.name).isEqualTo(update.name)
@@ -146,8 +146,8 @@ class TitleUpdaterTests {
                         bonuses = listOf(bonus)
                 )
                 val titleCopy = title.copy<TvSeries>()
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isEqualTo(titleCopy.id)
                             assertThat(title.name).isEqualTo(titleCopy.name)
@@ -171,8 +171,8 @@ class TitleUpdaterTests {
                         episodes = listOf(episode),
                         bonuses = listOf(bonus)
                 )
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isNull()
                             assertThat(title.name).isEqualTo(update.name)
@@ -197,8 +197,8 @@ class TitleUpdaterTests {
                         bonuses = listOf(bonus)
                 )
                 val titleCopy = title.copy<Season>()
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isEqualTo(titleCopy.id)
                             assertThat(title.name).isEqualTo(titleCopy.name)
@@ -221,8 +221,8 @@ class TitleUpdaterTests {
                         id = "big no",
                         bonuses = listOf(bonus)
                 )
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isNull()
                             assertThat(title.name).isEqualTo(update.name)
@@ -245,8 +245,8 @@ class TitleUpdaterTests {
                         bonuses = listOf(bonus)
                 )
                 val titleCopy = title.copy<Feature>()
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .assertNext {
                             assertThat(title.id).isEqualTo(titleCopy.id)
                             assertThat(title.name).isEqualTo(titleCopy.name)
@@ -260,8 +260,8 @@ class TitleUpdaterTests {
             should("fail updating different Title types") {
                 val title = Bonus()
                 val update = Feature()
-                StepVerifier
-                        .create(title.accept(TitleUpdater(update.toMono())))
+                title.accept(TitleUpdater(update.toMono()))
+                        .test()
                         .expectError(ServerWebInputException::class.java)
                         .verify()
             }
