@@ -12,7 +12,7 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
-  - ln -s /lib/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2
+  #- ln -s /lib/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 build:
