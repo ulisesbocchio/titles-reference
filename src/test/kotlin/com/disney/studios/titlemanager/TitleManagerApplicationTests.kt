@@ -197,7 +197,7 @@ class TitleManagerApplicationTests {
                                     .responseBody!!
 
                             client.put()
-                                    .uri("titles/${season.id}/episodes/${newEpisode.id}")
+                                    .uri("titles/${season.id}/child/${newEpisode.id}")
                                     .exchange()
                                     .expectStatus().isAccepted
 
@@ -218,7 +218,7 @@ class TitleManagerApplicationTests {
                                     }
 
                             client.delete()
-                                    .uri("titles/${season.id}/episodes/${newEpisode.id}")
+                                    .uri("titles/${season.id}/child/${newEpisode.id}")
                                     .exchange()
                                     .expectStatus().isAccepted
 
@@ -261,7 +261,7 @@ class TitleManagerApplicationTests {
                                     .responseBody!!
 
                             client.put()
-                                    .uri("titles/${season.id}/bonuses/${newBonus.id}")
+                                    .uri("titles/${season.id}/child/${newBonus.id}")
                                     .exchange()
                                     .expectStatus().isAccepted
 
@@ -282,7 +282,7 @@ class TitleManagerApplicationTests {
                                     }
 
                             client.delete()
-                                    .uri("titles/${season.id}/bonuses/${newBonus.id}")
+                                    .uri("titles/${season.id}/child/${newBonus.id}")
                                     .exchange()
                                     .expectStatus().isAccepted
 
@@ -325,7 +325,7 @@ class TitleManagerApplicationTests {
                                     .responseBody!!
 
                             client.put()
-                                    .uri("titles/${series.id}/seasons/${newSeason.id}")
+                                    .uri("titles/${series.id}/child/${newSeason.id}")
                                     .exchange()
                                     .expectStatus().isAccepted
 
@@ -346,7 +346,7 @@ class TitleManagerApplicationTests {
                                     }
 
                             client.delete()
-                                    .uri("titles/${series.id}/seasons/${newSeason.id}")
+                                    .uri("titles/${series.id}/child/${newSeason.id}")
                                     .exchange()
                                     .expectStatus().isAccepted
 
@@ -368,33 +368,6 @@ class TitleManagerApplicationTests {
                         }
             },
 
-            should("fail trying to add unknown children type to Title") {
-                client.get()
-                        .uri {
-                            it.path("/titles")
-                                    .queryParam("terms", "\"Star Wars: Clone Wars\"")
-                                    .build()
-                        }
-                        .exchange()
-                        .expectBodyList<TvSeries>()
-                        .hasSize(1)
-                        .allSatisfy { series ->
-
-                            val newSeason = client.post()
-                                    .uri("/titles")
-                                    .body(fromObject(Season(name = "Test Season")))
-                                    .exchange()
-                                    .expectBody<Season>()
-                                    .returnResult()
-                                    .responseBody!!
-
-                            client.put()
-                                    .uri("titles/${series.id}/something/${newSeason.id}")
-                                    .exchange()
-                                    .expectStatus().isBadRequest
-                        }
-            },
-
             should("fail trying to add incorrect children type to Title") {
                 client.get()
                         .uri {
@@ -407,16 +380,16 @@ class TitleManagerApplicationTests {
                         .hasSize(1)
                         .allSatisfy { series ->
 
-                            val newSeason = client.post()
+                            val newEpisode = client.post()
                                     .uri("/titles")
-                                    .body(fromObject(Season(name = "Test Season")))
+                                    .body(fromObject(Episode(name = "Test Episode")))
                                     .exchange()
-                                    .expectBody<Season>()
+                                    .expectBody<Episode>()
                                     .returnResult()
                                     .responseBody!!
 
                             client.put()
-                                    .uri("titles/${series.id}/bonuses/${newSeason.id}")
+                                    .uri("titles/${series.id}/child/${newEpisode.id}")
                                     .exchange()
                                     .expectStatus().isBadRequest
                         }
@@ -435,7 +408,7 @@ class TitleManagerApplicationTests {
                         .allSatisfy { series ->
 
                             client.put()
-                                    .uri("titles/${series.id}/seasons/12345678900987654321abcd")
+                                    .uri("titles/${series.id}/child/12345678900987654321abcd")
                                     .exchange()
                                     .expectStatus().isNotFound
                         }

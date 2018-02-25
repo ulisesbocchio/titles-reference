@@ -92,7 +92,7 @@ class TitleRepositoryTests {
             should("find 1 episode by id") {
                 titlesRepo.findAllSummaries(terms = "\"All the Best Cowboys Have Daddy Issues\"")
                         .toMono()
-                        .flatMap { titlesRepo.findByIdWithParent(it.id!!) }
+                        .flatMap { titlesRepo.findByIdWithChildren(it.id!!) }
                         .test()
                         .assertNext {
                             assertThat(it).matches{ it is Episode }
@@ -106,7 +106,7 @@ class TitleRepositoryTests {
             should("find 1 Series by id with Seasons") {
                 titlesRepo.findAllSummaries(terms = "\"Star Wars: Clone Wars\"")
                         .toMono()
-                        .flatMap { titlesRepo.findByIdWithParent(it.id!!) }
+                        .flatMap { titlesRepo.findByIdWithChildren(it.id!!) }
                         .test()
                         .assertNext {
                             assertThat(it is TvSeries).isTrue()
@@ -120,7 +120,7 @@ class TitleRepositoryTests {
             should("find 1 Season by id with Episodes") {
                 titlesRepo.findAllSummaries(terms = "\"Volume 1\"")
                         .toMono()
-                        .flatMap { titlesRepo.findByIdWithParent(it.id!!) }
+                        .flatMap { titlesRepo.findByIdWithChildren(it.id!!) }
                         .test()
                         .assertNext {
                             assertThat(it is Season).isTrue()

@@ -13,7 +13,7 @@ interface TitleRepositoryCustom {
      * Find a Title given an [id] populating parent information if pertinent.
      * To avoid circular dependency errors, the parent is populated in a second step.
      */
-    fun findByIdWithParent(id: String): Mono<Title>
+    fun findByIdWithChildren(id: String): Mono<Title>
 
     /**
      * Creates a Title.

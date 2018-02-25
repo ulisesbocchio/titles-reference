@@ -25,7 +25,7 @@ class TitleHandler(private val titleRepository: TitleRepository) {
      * @throws ServerWebInputException when title is not found
      */
     fun getTitleById(request: ServerRequest): Mono<ServerResponse> =
-            titleRepository.findByIdWithParent(request.pathVariable("id"))
+            titleRepository.findByIdWithChildren(request.pathVariable("id"))
                     .compose { okOrNotFound(it) }
 
     /**
@@ -51,7 +51,8 @@ class TitleHandler(private val titleRepository: TitleRepository) {
      * @throws ServerWebInputException when title is not found
      */
     fun updateTitle(request: ServerRequest): Mono<ServerResponse> = titleRepository.findById(request.pathVariable("id"))
-            .flatMap { it.accept(TitleUpdater(request.bodyToMono())) }
+            .zipWith(request.bodyToMono<Title>())
+            .map { it.t1.accept(TitleUpdater(it.t2)) }
             .compose { titleRepository.updateTitle(it) }
             .compose { acceptedOrNotFound(it) }
 
@@ -71,56 +72,29 @@ class TitleHandler(private val titleRepository: TitleRepository) {
 
     /**
      * Adds a child to a given title by IDs and child type. The parent ID is retrieved from the request's *id* path variable
-     * while the child ID is retrieved from the *childId* path variable. The kind of child is determined by the *childType*
-     * path variable (bonus, season, episode).
+     * while the child ID is retrieved from the *childId* path variable. The kind of child is determined by the child type.
      *
      * @throws ServerWebInputException when either title is not found or invalid childType
      */
     fun addChild(request: ServerRequest): Mono<ServerResponse> =
             titleRepository.findById(request.pathVariable("id"))
                     .zipWith(titleRepository.findById(request.pathVariable("childId")))
-                    .map { addChild(it.t1, it.t2, request.pathVariable("childType")) }
+                    .map { it.t2.accept(ParentSetter(it.t1)) }
                     .compose { titleRepository.updateTitle(it) }
                     .compose { acceptedOrNotFound(it) }
 
     /**
      * Removes a child from a given title by IDs and child type. The parent ID is retrieved from the request's *id* path variable
-     * while the child ID is retrieved from the *childId* path variable. The kind of child is determined by the *childType*
-     * path variable (bonus, season, episode).
+     * while the child ID is retrieved from the *childId* path variable. The kind of child is determined by the child type.
      *
      * @throws ServerWebInputException when either title is not found or invalid childType
      */
     fun deleteChild(request: ServerRequest): Mono<ServerResponse> =
-            titleRepository.findById(request.pathVariable("id"))
-                    .map { deleteChild(it, request.pathVariable("childId"), request.pathVariable("childType")) }
+            titleRepository.findById(request.pathVariable("childId"))
+                    .map { it.accept(ParentUnsetter(request.pathVariable("id"))) }
                     .compose { titleRepository.updateTitle(it) }
                     .compose { acceptedOrNotFound(it) }
 
-
-    private fun addChild(parent: Title, child: Title, childType: String): Title {
-        when (childType) {
-            "bonuses" -> doWhen(child, Bonus::class) { parent.bonuses += it }
-            "seasons" -> doWhen(parent, TvSeries::class) { series -> doWhen(child, Season::class) { series.seasons += it } }
-            "episodes" -> doWhen(parent, Season::class) { season -> doWhen(child, Episode::class) { season.episodes += it } }
-            else -> throw ServerWebInputException("Invalid child type: $childType")
-        }
-        return parent
-    }
-
-
-    private fun deleteChild(parent: Title, childId: String, childType: String): Title {
-        when (childType) {
-            "bonuses" -> parent.bonuses -= Bonus(childId)
-            "seasons" -> doWhen(parent, TvSeries::class) { it.seasons -= Season(childId) }
-            "episodes" -> doWhen(parent, Season::class) { it.episodes -= Episode(childId) }
-            else -> throw ServerWebInputException("Invalid child type: $childType")
-        }
-        return parent
-    }
-
-    private inline fun <reified T : Any> doWhen(title: Title, clazz: KClass<T>, doFn: (T) -> Unit) {
-        if (title is T) doFn(title) else throw ServerWebInputException("Incompatible child type: ${clazz.simpleName}")
-    }
 
     fun <T : Any> okOrNotFound(title: Mono<T>): Mono<ServerResponse> =
             title.flatMap { ServerResponse.ok().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())

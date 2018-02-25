@@ -49,16 +49,15 @@ abstract class Title(
         id: String? = null,
         @TextIndexed var name: String? = null,
         var description: String? = null,
-        @DBRef open var bonuses: List<Bonus>? = null
+        @Transient open var bonuses: List<Bonus>? = null
 ) : BaseDoc(id), VisitableTitle
 
 abstract class ChildTitle(
         id: String? = null,
         name: String? = null,
         description: String? = null,
-        bonuses: List<Bonus>? = null,
-        @Transient var parent: Title? = null
-) : Title(id, name, description, bonuses) {
+        @DBRef var parent: Title? = null
+) : Title(id, name, description) {
 
     override fun propertyToString(name: String, value: Any?): Any? = if (name == "parent") parent?.id else value
 
@@ -77,8 +76,8 @@ open class Bonus(
 ) : ChildTitle(id, name, description) {
 
     override var bonuses: List<Bonus>?
-        get() = null
-        set(value) {}
+        @Transient get() = null
+        @Transient set(value) {}
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
 
@@ -93,10 +92,9 @@ class Feature(
         id: String? = null,
         name: String? = null,
         description: String? = null,
-        bonuses: List<Bonus>? = null,
         var theatricalReleaseDate: Date? = null,
         var duration: String? = null
-) : Title(id, name, description, bonuses) {
+) : Title(id, name, description) {
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
 
@@ -111,11 +109,11 @@ class TvSeries(
         id: String? = null,
         name: String? = null,
         description: String? = null,
-        bonuses: List<Bonus>? = null,
-        var releaseDate: Date? = null,
-        @DBRef
-        var seasons: List<Season>? = null
-) : Title(id, name, description, bonuses) {
+        var releaseDate: Date? = null
+) : Title(id, name, description) {
+
+    @Transient
+    var seasons: List<Season>? = null
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
 
@@ -130,11 +128,11 @@ class Season(
         id: String? = null,
         name: String? = null,
         description: String? = null,
-        bonuses: List<Bonus>? = null,
-        var releaseDate: Date? = null,
-        @DBRef
-        var episodes: List<Episode>? = null
-) : ChildTitle(id, name, description, bonuses) {
+        var releaseDate: Date? = null
+) : ChildTitle(id, name, description) {
+
+    @Transient
+    var episodes: List<Episode>? = null
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
 
@@ -149,10 +147,9 @@ class Episode(
         id: String? = null,
         name: String? = null,
         description: String? = null,
-        bonuses: List<Bonus>? = null,
         var releaseDate: Date? = null,
         var duration: String? = null
-) : ChildTitle(id, name, description, bonuses) {
+) : ChildTitle(id, name, description) {
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
 
