@@ -127,37 +127,12 @@ Sample Response:
     {
       "type": "Season",
       "id": "5a8918e5a2ed17523ec6d528",
-      "name": "Season 1",
-      "episodes": [
-        {
-          "type": "Episode",
-          "id": "5a8918e5a2ed17523ec6d529",
-          "name": "...In Translation",
-          "releaseDate": "2004-09-22T00:00:00.000+0000",
-          "duration": "42 min"
-        },
-        {
-          "type": "Episode",
-          "id": "5a8918e5a2ed17523ec6d52a",
-          "name": "All the Best Cowboys Have Daddy Issues",
-          "releaseDate": "2004-09-29T00:00:00.000+0000",
-          "duration": "42 min"
-        }
-      ]
+      "name": "Season 1"
     },
     {
       "type": "Season",
       "id": "5a8918e5a2ed17523ec6d52c",
-      "name": "Season 2",
-      "episodes": [
-        {
-          "type": "Episode",
-          "id": "5a8918e5a2ed17523ec6d52d",
-          "name": "...And Found",
-          "releaseDate": "2005-09-21T00:00:00.000+0000",
-          "duration": "42 min"
-        }
-      ]
+      "name": "Season 2"
     }
   ]
 }
@@ -187,7 +162,7 @@ DELETE /titles/123
 ```
 Would remove Title `321`
 
-### `PUT /titles/{id}/{childType}/{childId}`
+### `PUT /titles/{id}/child/{childId}`
 Adds a child of a given type to a given Title.
 
 For instance:
@@ -197,7 +172,7 @@ PUT /titles/123/episodes/321
 Would add Episode `321` to TV Series `123`
 
 
-### `DELETE /titles/{id}/{childType}/{childId}`
+### `DELETE /titles/{id}/child/{childId}`
 Removes a child of a given type to a given Title.
 
 For instance:

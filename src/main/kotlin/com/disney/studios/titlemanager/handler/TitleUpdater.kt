@@ -15,7 +15,9 @@ class TitleUpdater(private val update: Title) : TitleVisitor<Title> {
     }
 
     private fun ChildTitle.updateChildTitleFields(update: ChildTitle) {
-        parent = update.parent ?: parent
+        if (update.parent != null) {
+            accept(ParentSetter(update.parent!!))
+        }
     }
 
     override fun visit(title: Bonus): Title = title.update {
