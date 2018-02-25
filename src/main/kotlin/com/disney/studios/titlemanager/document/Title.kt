@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes
 import org.springframework.data.mongodb.core.index.TextIndexed
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
-import java.util.*
+import java.util.Date
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.memberProperties
@@ -46,21 +46,20 @@ interface VisitableTitle {
  * Base Title with common properties
  */
 abstract class Title(
-        id: String? = null,
-        @TextIndexed var name: String? = null,
-        var description: String? = null,
-        @Transient open var bonuses: List<Bonus>? = null
+    id: String? = null,
+    @TextIndexed var name: String? = null,
+    var description: String? = null,
+    @Transient open var bonuses: List<Bonus>? = null
 ) : BaseDoc(id), VisitableTitle
 
 abstract class ChildTitle(
-        id: String? = null,
-        name: String? = null,
-        description: String? = null,
-        @DBRef var parent: Title? = null
+    id: String? = null,
+    name: String? = null,
+    description: String? = null,
+    @DBRef var parent: Title? = null
 ) : Title(id, name, description) {
 
     override fun propertyToString(name: String, value: Any?): Any? = if (name == "parent") parent?.id else value
-
 }
 
 @TypeAlias("Bonus")
@@ -69,10 +68,10 @@ abstract class ChildTitle(
  * Bonus Title
  */
 open class Bonus(
-        id: String? = null,
-        name: String? = null,
-        description: String? = null,
-        var duration: String? = null
+    id: String? = null,
+    name: String? = null,
+    description: String? = null,
+    var duration: String? = null
 ) : ChildTitle(id, name, description) {
 
     override var bonuses: List<Bonus>?
@@ -80,7 +79,6 @@ open class Bonus(
         @Transient set(value) {}
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
-
 }
 
 @TypeAlias("Feature")
@@ -89,15 +87,14 @@ open class Bonus(
  * Feature Title
  */
 class Feature(
-        id: String? = null,
-        name: String? = null,
-        description: String? = null,
-        var theatricalReleaseDate: Date? = null,
-        var duration: String? = null
+    id: String? = null,
+    name: String? = null,
+    description: String? = null,
+    var theatricalReleaseDate: Date? = null,
+    var duration: String? = null
 ) : Title(id, name, description) {
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
-
 }
 
 @TypeAlias("TV Series")
@@ -106,17 +103,16 @@ class Feature(
  * TV Series Title
  */
 class TvSeries(
-        id: String? = null,
-        name: String? = null,
-        description: String? = null,
-        var releaseDate: Date? = null
+    id: String? = null,
+    name: String? = null,
+    description: String? = null,
+    var releaseDate: Date? = null
 ) : Title(id, name, description) {
 
     @Transient
     var seasons: List<Season>? = null
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
-
 }
 
 @TypeAlias("Season")
@@ -125,17 +121,16 @@ class TvSeries(
  * Season Title
  */
 class Season(
-        id: String? = null,
-        name: String? = null,
-        description: String? = null,
-        var releaseDate: Date? = null
+    id: String? = null,
+    name: String? = null,
+    description: String? = null,
+    var releaseDate: Date? = null
 ) : ChildTitle(id, name, description) {
 
     @Transient
     var episodes: List<Episode>? = null
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
-
 }
 
 @TypeAlias("Episode")
@@ -144,38 +139,37 @@ class Season(
  * Episode Title
  */
 class Episode(
-        id: String? = null,
-        name: String? = null,
-        description: String? = null,
-        var releaseDate: Date? = null,
-        var duration: String? = null
+    id: String? = null,
+    name: String? = null,
+    description: String? = null,
+    var releaseDate: Date? = null,
+    var duration: String? = null
 ) : ChildTitle(id, name, description) {
 
     override fun <T> accept(visitor: TitleVisitor<T>): T = visitor.visit(this)
-
 }
 
 /**
  * Base class for Mongo documents with String Id, toString, equals, hashCode, and copy for mutable properties
  */
 abstract class BaseDoc(
-        @Id var id: String? = null
+    @Id var id: String? = null
 ) {
     override fun toString(): String {
         return this.javaClass.kotlin.memberProperties
-                .fold(ToStringCreator(this)) { acc, property ->
-                    acc.append(property.name, propertyToString(property.name, property.get(this)))
-                }.toString()
+            .fold(ToStringCreator(this)) { acc, property ->
+                acc.append(property.name, propertyToString(property.name, property.get(this)))
+            }.toString()
     }
 
     inline fun <reified T : Title> copy(): T {
         return T::class.java.kotlin.memberProperties
-                .fold(T::class.createInstance(), { copy, property ->
-                    if (property is KMutableProperty<*>) {
-                        property.setter.call(copy, property.get(this as T))
-                    }
-                    copy
-                })
+            .fold(T::class.createInstance(), { copy, property ->
+                if (property is KMutableProperty<*>) {
+                    property.setter.call(copy, property.get(this as T))
+                }
+                copy
+            })
     }
 
     open fun propertyToString(name: String, value: Any?): Any? = value

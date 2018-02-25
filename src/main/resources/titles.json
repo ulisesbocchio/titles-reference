@@ -1,278 +1,277 @@
 [
-	{
-		"type": "Feature",
-		"name": "Frozen",
-		"description": "Animated feature. Fearless optimist, the Princess Anna, sets off on an epic journey—teaming up with rugged mountain man, Kristoff, and his loyal reindeer Sven—to find her sister Elsa, whose icy powers have trapped the kingdom of Arendelle in eternal winter.",
-		"theatricalReleaseDate": "2013-11-27",
-		"duration": "102 min",
-		"bonuses": [
-			{
-				"type": "Bonus",
-				"name": "Breaking the Ice",
-				"description": "Get to know frozen from the snowy ground up as the filmmakers and songwriters discuss the story's roots and inspiration; the joys of animating olaf, the little snowman with the sunny personality; and the creation of those amazing songs.",
-				"duration": "15 min"
-			},
-			{
-				"type": "Bonus",
-				"name": "Deleted Scene: Meet Kristoff 2 - Introduction By Directors",
-				"description": "Kristoff goes mountain climbing with a friend. With an introduction by directors chris buck and jennifer lee.",
-				"duration": "13 min"
-			}
-		]
-
-	},
-	{
-		"type": "Feature",
-		"name": "Cars",
-		"theatricalReleaseDate": "2006-06-09",
-		"duration": "117 min",
-		"description": "Lightning McQueen, a hotshot rookie race car driven to succeed, discovers that life is about the journey, not the finish line, when he finds himself unexpectedly detoured in the sleepy Route 66 town of Radiator Springs.",
-		"bonuses": [
-			{
-				"type": "Bonus",
-				"name": "Animation and Acting",
-				"description": "The pixar animators discuss the basic nuts and bolts of transforming hunks of metal and paint into expressive, emotional characters with their own unique personalities.",
-				"duration": "12 min"
-			},
-			{
-				"type": "Bonus",
-				"name": "Character Design",
-				"description": "Lightning mcqueen, doc and the gang may be characters, but they're cars too. The filmmakers explain how getting the design right brings a character to life, and discuss the challenges of chrome, rust, and tire treads.",
-				"duration": "12 min"
-			}
-		]
-	},
-	{
-		"type": "Feature",
-		"name": "Star Wars: The Last Jedi",
-		"theatricalReleaseDate": "2017-12-15",
-		"duration": "162 min",
-		"description": "The Last Jedi, the Skywalker saga continues as the heroes of The Force Awakens join the galactic legends in an epic adventure that unlocks age-old mysteries of the Force and shocking revelations of the past."
-	},
-	{
-		"type": "TV Series",
-		"name": "Lost",
-		"releaseDate": "2004-09-22",
-		"description": "A plane crashes on a Pacific island, and the 48 survivors, stripped of everything, scavenge what they can from the plane for their survival. Some panic; some pin their hopes on rescue. The band of friends, family, enemies, and strangers must work together against the cruel weather and harsh terrain.",
-		"seasons": [
-			{
-				"type": "Season",
-				"name": "Season 1",
-				"episodes": [
-					{
-						"type": "Episode",
-						"name": "...In Translation",
-						"duration": "42 min",
-						"releaseDate": "2004-09-22"
-					},
-					{
-						"type": "Episode",
-						"name": "All the Best Cowboys Have Daddy Issues",
-						"duration": "42 min",
-						"releaseDate": "2004-09-29"
-					},
-					{
-						"type": "Episode",
-						"name": "Born to Run",
-						"duration": "41 min",
-						"releaseDate": "2004-10-06"
-					}
-				]
-			},
-			{
-				"type": "Season",
-				"name": "Season 2",
-				"episodes": [
-					{
-						"type": "Episode",
-						"name": "...And Found",
-						"duration": "42 min",
-						"releaseDate": "2005-09-21"
-					},
-					{
-						"type": "Episode",
-						"name": "23rd Psalm, The",
-						"duration": "43 min",
-						"releaseDate": "2005-09-28"
-					},
-					{
-						"type": "Episode",
-						"name": "?",
-						"duration": "42 min",
-						"releaseDate": "2005-10-05"
-					}
-				]
-			}
-		]
-	},
-	{
-		"type": "TV Series",
-		"name": "Star Wars: Clone Wars",
-		"releaseDate": "2003-11-07",
-		"seasons": [
-			{
-				"type": "Season",
-				"name": "Volume 1",
-				"episodes": [
-					{
-						"type": "Episode",
-						"name": "Chapter 01",
-						"releaseDate": "2003-11-07",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 02",
-						"releaseDate": "2003-11-10",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 03",
-						"releaseDate": "2003-11-11",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 04",
-						"releaseDate": "2003-11-12",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 05",
-						"releaseDate": "2003-11-13",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 06",
-						"releaseDate": "2003-11-14",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 07",
-						"releaseDate": "2003-11-15",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 08",
-						"releaseDate": "2003-11-16",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 09",
-						"releaseDate": "2003-11-17",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 10",
-						"releaseDate": "2003-11-18",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 11",
-						"releaseDate": "2003-11-19",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 12",
-						"releaseDate": "2003-11-20",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 13",
-						"releaseDate": "2003-11-21",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 14",
-						"releaseDate": "2003-11-22",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 15",
-						"releaseDate": "2003-11-23",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 16",
-						"releaseDate": "2003-11-24",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 17",
-						"releaseDate": "2003-11-25",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 18",
-						"releaseDate": "2003-11-26",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 19",
-						"releaseDate": "2003-11-27",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 20",
-						"releaseDate": "2003-11-28",
-						"duration": "4 min"
-					}
-				]
-			},
-			{
-				"type": "Season",
-				"name": "Volume 2",
-				"episodes": [
-					{
-						"type": "Episode",
-						"name": "Chapter 21",
-						"releaseDate": "2003-11-29",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 22",
-						"releaseDate": "2003-11-30",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 23",
-						"releaseDate": "2003-12-01",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 24",
-						"releaseDate": "2003-12-02",
-						"duration": "4 min"
-					},
-					{
-						"type": "Episode",
-						"name": "Chapter 25",
-						"releaseDate": "2003-12-03",
-						"duration": "4 min"
-					}
-				]
-			}
-		]
-	}
+  {
+    "type": "Feature",
+    "name": "Frozen",
+    "description": "Animated feature. Fearless optimist, the Princess Anna, sets off on an epic journey—teaming up with rugged mountain man, Kristoff, and his loyal reindeer Sven—to find her sister Elsa, whose icy powers have trapped the kingdom of Arendelle in eternal winter.",
+    "theatricalReleaseDate": "2013-11-27",
+    "duration": "102 min",
+    "bonuses": [
+      {
+        "type": "Bonus",
+        "name": "Breaking the Ice",
+        "description": "Get to know frozen from the snowy ground up as the filmmakers and songwriters discuss the story's roots and inspiration; the joys of animating olaf, the little snowman with the sunny personality; and the creation of those amazing songs.",
+        "duration": "15 min"
+      },
+      {
+        "type": "Bonus",
+        "name": "Deleted Scene: Meet Kristoff 2 - Introduction By Directors",
+        "description": "Kristoff goes mountain climbing with a friend. With an introduction by directors chris buck and jennifer lee.",
+        "duration": "13 min"
+      }
+    ]
+  },
+  {
+    "type": "Feature",
+    "name": "Cars",
+    "theatricalReleaseDate": "2006-06-09",
+    "duration": "117 min",
+    "description": "Lightning McQueen, a hotshot rookie race car driven to succeed, discovers that life is about the journey, not the finish line, when he finds himself unexpectedly detoured in the sleepy Route 66 town of Radiator Springs.",
+    "bonuses": [
+      {
+        "type": "Bonus",
+        "name": "Animation and Acting",
+        "description": "The pixar animators discuss the basic nuts and bolts of transforming hunks of metal and paint into expressive, emotional characters with their own unique personalities.",
+        "duration": "12 min"
+      },
+      {
+        "type": "Bonus",
+        "name": "Character Design",
+        "description": "Lightning mcqueen, doc and the gang may be characters, but they're cars too. The filmmakers explain how getting the design right brings a character to life, and discuss the challenges of chrome, rust, and tire treads.",
+        "duration": "12 min"
+      }
+    ]
+  },
+  {
+    "type": "Feature",
+    "name": "Star Wars: The Last Jedi",
+    "theatricalReleaseDate": "2017-12-15",
+    "duration": "162 min",
+    "description": "The Last Jedi, the Skywalker saga continues as the heroes of The Force Awakens join the galactic legends in an epic adventure that unlocks age-old mysteries of the Force and shocking revelations of the past."
+  },
+  {
+    "type": "TV Series",
+    "name": "Lost",
+    "releaseDate": "2004-09-22",
+    "description": "A plane crashes on a Pacific island, and the 48 survivors, stripped of everything, scavenge what they can from the plane for their survival. Some panic; some pin their hopes on rescue. The band of friends, family, enemies, and strangers must work together against the cruel weather and harsh terrain.",
+    "seasons": [
+      {
+        "type": "Season",
+        "name": "Season 1",
+        "episodes": [
+          {
+            "type": "Episode",
+            "name": "...In Translation",
+            "duration": "42 min",
+            "releaseDate": "2004-09-22"
+          },
+          {
+            "type": "Episode",
+            "name": "All the Best Cowboys Have Daddy Issues",
+            "duration": "42 min",
+            "releaseDate": "2004-09-29"
+          },
+          {
+            "type": "Episode",
+            "name": "Born to Run",
+            "duration": "41 min",
+            "releaseDate": "2004-10-06"
+          }
+        ]
+      },
+      {
+        "type": "Season",
+        "name": "Season 2",
+        "episodes": [
+          {
+            "type": "Episode",
+            "name": "...And Found",
+            "duration": "42 min",
+            "releaseDate": "2005-09-21"
+          },
+          {
+            "type": "Episode",
+            "name": "23rd Psalm, The",
+            "duration": "43 min",
+            "releaseDate": "2005-09-28"
+          },
+          {
+            "type": "Episode",
+            "name": "?",
+            "duration": "42 min",
+            "releaseDate": "2005-10-05"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "TV Series",
+    "name": "Star Wars: Clone Wars",
+    "releaseDate": "2003-11-07",
+    "seasons": [
+      {
+        "type": "Season",
+        "name": "Volume 1",
+        "episodes": [
+          {
+            "type": "Episode",
+            "name": "Chapter 01",
+            "releaseDate": "2003-11-07",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 02",
+            "releaseDate": "2003-11-10",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 03",
+            "releaseDate": "2003-11-11",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 04",
+            "releaseDate": "2003-11-12",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 05",
+            "releaseDate": "2003-11-13",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 06",
+            "releaseDate": "2003-11-14",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 07",
+            "releaseDate": "2003-11-15",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 08",
+            "releaseDate": "2003-11-16",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 09",
+            "releaseDate": "2003-11-17",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 10",
+            "releaseDate": "2003-11-18",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 11",
+            "releaseDate": "2003-11-19",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 12",
+            "releaseDate": "2003-11-20",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 13",
+            "releaseDate": "2003-11-21",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 14",
+            "releaseDate": "2003-11-22",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 15",
+            "releaseDate": "2003-11-23",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 16",
+            "releaseDate": "2003-11-24",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 17",
+            "releaseDate": "2003-11-25",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 18",
+            "releaseDate": "2003-11-26",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 19",
+            "releaseDate": "2003-11-27",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 20",
+            "releaseDate": "2003-11-28",
+            "duration": "4 min"
+          }
+        ]
+      },
+      {
+        "type": "Season",
+        "name": "Volume 2",
+        "episodes": [
+          {
+            "type": "Episode",
+            "name": "Chapter 21",
+            "releaseDate": "2003-11-29",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 22",
+            "releaseDate": "2003-11-30",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 23",
+            "releaseDate": "2003-12-01",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 24",
+            "releaseDate": "2003-12-02",
+            "duration": "4 min"
+          },
+          {
+            "type": "Episode",
+            "name": "Chapter 25",
+            "releaseDate": "2003-12-03",
+            "duration": "4 min"
+          }
+        ]
+      }
+    ]
+  }
 ]
 

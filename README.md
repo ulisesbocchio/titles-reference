@@ -60,10 +60,10 @@ Use:
 ```bash
 ./gradlew composeDown
 
-``` 
+```
 to stop it
 
-### Start standalone 
+### Start standalone
 Running the app standalone requires MongoDB running on localhost:27017
 ````bash
 ./gradlew bootRun

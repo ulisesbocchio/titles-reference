@@ -28,5 +28,5 @@ interface TitleRepositoryCustom {
     /**
      * Finds all Title Summaries, this is all titles without parent or children
      */
-    fun findAllSummaries(terms:String? = null, vararg types:String): Flux<Title>
+    fun findAllSummaries(terms: String? = null, vararg types: String): Flux<Title>
 }

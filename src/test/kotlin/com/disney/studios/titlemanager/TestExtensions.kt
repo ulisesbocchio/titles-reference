@@ -2,7 +2,9 @@ package com.disney.studios.titlemanager
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DynamicTest
-import org.springframework.test.web.reactive.server.WebTestClient.*
+import org.springframework.test.web.reactive.server.WebTestClient.BodySpec
+import org.springframework.test.web.reactive.server.WebTestClient.ListBodySpec
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 import java.text.SimpleDateFormat
 
 fun should(name: String, test: () -> Unit) = DynamicTest.dynamicTest("should $name", test)

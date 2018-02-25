@@ -1,9 +1,7 @@
 package com.disney.studios.titlemanager.handler
 
 import com.disney.studios.titlemanager.bodyToMono
-import com.disney.studios.titlemanager.document.*
-import com.disney.studios.titlemanager.minus
-import com.disney.studios.titlemanager.plus
+import com.disney.studios.titlemanager.document.Title
 import com.disney.studios.titlemanager.queryParamValues
 import com.disney.studios.titlemanager.repository.TitleRepository
 import org.springframework.web.reactive.function.BodyInserters.fromObject
@@ -12,7 +10,6 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.body
 import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
-import kotlin.reflect.KClass
 
 /**
  * Handler methods for CRUD Operations on Title, including adding and removing child titles: *bonuses, episodes, seasons*
@@ -25,8 +22,8 @@ class TitleHandler(private val titleRepository: TitleRepository) {
      * @throws ServerWebInputException when title is not found
      */
     fun getTitleById(request: ServerRequest): Mono<ServerResponse> =
-            titleRepository.findByIdWithChildren(request.pathVariable("id"))
-                    .compose { okOrNotFound(it) }
+        titleRepository.findByIdWithChildren(request.pathVariable("id"))
+            .compose { okOrNotFound(it) }
 
     /**
      * Retrieve all titles, in summary form (without parent or children).
@@ -34,8 +31,8 @@ class TitleHandler(private val titleRepository: TitleRepository) {
      * [Title.name] property.
      */
     fun getAllTitles(request: ServerRequest): Mono<ServerResponse> =
-            ServerResponse.ok().body(titleRepository
-                    .findAllSummaries(request.queryParam("terms").orElse(null), *request.queryParamValues("type")))
+        ServerResponse.ok().body(titleRepository
+            .findAllSummaries(request.queryParam("terms").orElse(null), *request.queryParamValues("type")))
 
     /**
      * Creates a Title from the request's *body*.
@@ -51,10 +48,10 @@ class TitleHandler(private val titleRepository: TitleRepository) {
      * @throws ServerWebInputException when title is not found
      */
     fun updateTitle(request: ServerRequest): Mono<ServerResponse> = titleRepository.findById(request.pathVariable("id"))
-            .zipWith(request.bodyToMono<Title>())
-            .map { it.t1.accept(TitleUpdater(it.t2)) }
-            .compose { titleRepository.updateTitle(it) }
-            .compose { acceptedOrNotFound(it) }
+        .zipWith(request.bodyToMono<Title>())
+        .map { it.t1.accept(TitleUpdater(it.t2)) }
+        .compose { titleRepository.updateTitle(it) }
+        .compose { acceptedOrNotFound(it) }
 
     /**
      * Deletes a Title by ID. The ID is retrieved from the request's *id* path variable.
@@ -62,13 +59,13 @@ class TitleHandler(private val titleRepository: TitleRepository) {
      * @throws ServerWebInputException when title is not found
      */
     fun deleteTitle(request: ServerRequest): Mono<ServerResponse> =
-            titleRepository.existsById(request.pathVariable("id"))
-                    .flatMap {
-                        if (it)
-                            titleRepository.deleteById(request.pathVariable("id"))
-                                    .then(ServerResponse.accepted().body(fromObject(it)))
-                        else ServerResponse.notFound().build()
-                    }
+        titleRepository.existsById(request.pathVariable("id"))
+            .flatMap {
+                if (it)
+                    titleRepository.deleteById(request.pathVariable("id"))
+                        .then(ServerResponse.accepted().body(fromObject(it)))
+                else ServerResponse.notFound().build()
+            }
 
     /**
      * Adds a child to a given title by IDs and child type. The parent ID is retrieved from the request's *id* path variable
@@ -77,11 +74,11 @@ class TitleHandler(private val titleRepository: TitleRepository) {
      * @throws ServerWebInputException when either title is not found or invalid childType
      */
     fun addChild(request: ServerRequest): Mono<ServerResponse> =
-            titleRepository.findById(request.pathVariable("id"))
-                    .zipWith(titleRepository.findById(request.pathVariable("childId")))
-                    .map { it.t2.accept(ParentSetter(it.t1)) }
-                    .compose { titleRepository.updateTitle(it) }
-                    .compose { acceptedOrNotFound(it) }
+        titleRepository.findById(request.pathVariable("id"))
+            .zipWith(titleRepository.findById(request.pathVariable("childId")))
+            .map { it.t2.accept(ParentSetter(it.t1)) }
+            .compose { titleRepository.updateTitle(it) }
+            .compose { acceptedOrNotFound(it) }
 
     /**
      * Removes a child from a given title by IDs and child type. The parent ID is retrieved from the request's *id* path variable
@@ -90,15 +87,14 @@ class TitleHandler(private val titleRepository: TitleRepository) {
      * @throws ServerWebInputException when either title is not found or invalid childType
      */
     fun deleteChild(request: ServerRequest): Mono<ServerResponse> =
-            titleRepository.findById(request.pathVariable("childId"))
-                    .map { it.accept(ParentUnsetter(request.pathVariable("id"))) }
-                    .compose { titleRepository.updateTitle(it) }
-                    .compose { acceptedOrNotFound(it) }
-
+        titleRepository.findById(request.pathVariable("childId"))
+            .map { it.accept(ParentUnsetter(request.pathVariable("id"))) }
+            .compose { titleRepository.updateTitle(it) }
+            .compose { acceptedOrNotFound(it) }
 
     fun <T : Any> okOrNotFound(title: Mono<T>): Mono<ServerResponse> =
-            title.flatMap { ServerResponse.ok().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
+        title.flatMap { ServerResponse.ok().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
 
     fun <T : Any> acceptedOrNotFound(title: Mono<T>): Mono<ServerResponse> =
-            title.flatMap { ServerResponse.accepted().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
+        title.flatMap { ServerResponse.accepted().body(fromObject(it)) }.switchIfEmpty(ServerResponse.notFound().build())
 }

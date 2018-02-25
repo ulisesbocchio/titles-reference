@@ -33,18 +33,18 @@ class TitleManagerApplication {
 
     @Bean
     fun titleLoader(titleRepository: TitleRepository,
-                    @Value("\${titles.location}") titlesLocation: String) = TitleLoader(titleRepository, titlesLocation)
+        @Value("\${titles.location}") titlesLocation: String) = TitleLoader(titleRepository, titlesLocation)
 
     @Bean
     fun titleHandler(titleRepository: TitleRepository) = TitleHandler(titleRepository)
 
     @Bean
     fun mappingMongoConverter(factory: MongoDbFactory,
-                              context: MongoMappingContext, beanFactory: BeanFactory,
-                              conversions: MongoCustomConversions): MappingMongoConverter {
+        context: MongoMappingContext, beanFactory: BeanFactory,
+        conversions: MongoCustomConversions): MappingMongoConverter {
         val dbRefResolver = DefaultDbRefResolver(factory)
         val mappingConverter = MappingMongoConverter(dbRefResolver,
-                context)
+            context)
         mappingConverter.setCustomConversions(conversions)
         mappingConverter.typeMapper = DefaultMongoTypeMapper("type", context)
         return mappingConverter
@@ -62,7 +62,6 @@ class TitleManagerApplication {
             DELETE("/{id}/child/{childId}", titleHandler::deleteChild)
         }
     }
-
 }
 
 /**
@@ -70,12 +69,6 @@ class TitleManagerApplication {
  */
 fun main(args: Array<String>) {
     SpringApplicationBuilder()
-            .sources(TitleManagerApplication::class.java)
-            .run(*args)
+        .sources(TitleManagerApplication::class.java)
+        .run(*args)
 }
-
-
-
-
-
-

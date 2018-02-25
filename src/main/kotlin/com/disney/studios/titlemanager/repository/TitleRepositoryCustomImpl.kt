@@ -1,6 +1,12 @@
 package com.disney.studios.titlemanager.repository
 
-import com.disney.studios.titlemanager.document.*
+import com.disney.studios.titlemanager.document.Bonus
+import com.disney.studios.titlemanager.document.Episode
+import com.disney.studios.titlemanager.document.Feature
+import com.disney.studios.titlemanager.document.Season
+import com.disney.studios.titlemanager.document.Title
+import com.disney.studios.titlemanager.document.TitleVisitor
+import com.disney.studios.titlemanager.document.TvSeries
 import com.disney.studios.titlemanager.find
 import com.disney.studios.titlemanager.findById
 import org.bson.types.ObjectId
@@ -19,10 +25,10 @@ import reactor.core.publisher.Mono
 class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperations) : TitleRepositoryCustom {
 
     override fun findAllSummaries(terms: String?, vararg types: String): Flux<Title> =
-            mongoOperations.find(Query()
-                    .types(*types)
-                    .matching(terms)
-                    .noParent())
+        mongoOperations.find(Query()
+            .types(*types)
+            .matching(terms)
+            .noParent())
 
     override fun createTitle(title: Mono<Title>): Mono<Title> = mongoOperations.insert(title)
 
@@ -31,20 +37,20 @@ class TitleRepositoryCustomImpl(private val mongoOperations: ReactiveMongoOperat
     // Spring data mongodb doesn't handle circular references gracefully so manual intervention is needed here.
     // Basically instead of dealing with children as a DBRefs, we fabricate them with transient properties
     override fun findByIdWithChildren(id: String): Mono<Title> =
-            mongoOperations.findById<Title>(id)
-                    .populateChildren()
+        mongoOperations.findById<Title>(id)
+            .populateChildren()
 
     private fun Mono<Title>.populateChildren(): Mono<Title> =
-            zipWhen {
-                mongoOperations.find<Title>(Query()
-                        .byParent(it.id!!)
-                        .noParent())
-                        .collectList()
-            }.map { it.t1.accept(ChildrenPopulator(it.t2)) }
+        zipWhen {
+            mongoOperations.find<Title>(Query()
+                .byParent(it.id!!)
+                .noParent())
+                .collectList()
+        }.map { it.t1.accept(ChildrenPopulator(it.t2)) }
 
     private fun Query.noParent(): Query {
         fields()
-                .exclude("parent")
+            .exclude("parent")
         return this
     }
 

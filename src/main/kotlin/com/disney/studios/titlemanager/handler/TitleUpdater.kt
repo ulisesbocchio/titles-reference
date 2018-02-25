@@ -1,6 +1,13 @@
 package com.disney.studios.titlemanager.handler
 
-import com.disney.studios.titlemanager.document.*
+import com.disney.studios.titlemanager.document.Bonus
+import com.disney.studios.titlemanager.document.ChildTitle
+import com.disney.studios.titlemanager.document.Episode
+import com.disney.studios.titlemanager.document.Feature
+import com.disney.studios.titlemanager.document.Season
+import com.disney.studios.titlemanager.document.Title
+import com.disney.studios.titlemanager.document.TitleVisitor
+import com.disney.studios.titlemanager.document.TvSeries
 import org.springframework.web.server.ServerWebInputException
 import kotlin.reflect.KClass
 
@@ -55,7 +62,7 @@ class TitleUpdater(private val update: Title) : TitleVisitor<Title> {
     }
 
     private fun Title.badRequest() =
-            ServerWebInputException("Incompatible update type: '${update::class.simpleName}' for title type: '${this::class.simpleName}'")
+        ServerWebInputException("Incompatible update type: '${update::class.simpleName}' for title type: '${this::class.simpleName}'")
 }
 
 /**
@@ -81,7 +88,7 @@ class ParentSetter(private val parent: Title) : TitleVisitor<Title> {
     }
 
     private fun Title.invalidRelationship() =
-            ServerWebInputException("Cannot establish relationship between '${parent::class.simpleName}' and '${this::class.simpleName}'")
+        ServerWebInputException("Cannot establish relationship between '${parent::class.simpleName}' and '${this::class.simpleName}'")
 }
 
 /**
@@ -107,8 +114,8 @@ class ParentUnsetter(private val parentId: String) : TitleVisitor<Title> {
     }
 
     private fun invalidParent(title: Title) =
-            ServerWebInputException("Title $parentId not the parent of ${title.id}")
+        ServerWebInputException("Title $parentId not the parent of ${title.id}")
 
     private fun Title.invalidRelationship() =
-            ServerWebInputException("Invalid child type: '${this::class.simpleName}'")
+        ServerWebInputException("Invalid child type: '${this::class.simpleName}'")
 }

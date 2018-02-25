@@ -34,7 +34,6 @@ inline fun <reified T : Any> ReactiveMongoOperations.findOne(query: Query): Mono
  */
 fun <T> Iterable<T>?.toFlux(): Flux<T> = if (this != null) Flux.fromIterable(this) else Flux.empty()
 
-
 /**
  * Converts a [ServerRequest] body into a [Mono].
  *
@@ -75,7 +74,7 @@ operator fun <T> Collection<T>?.plus(element: T): List<T> {
  */
 operator fun <T> Collection<T>?.minus(element: T): List<T>? {
     if (this != null) {
-        val result = ArrayList<T>(this.size  - 1)
+        val result = ArrayList<T>(this.size - 1)
         var removed = false
         return this.filterTo(result) {
             if (!removed && it == element) {
@@ -93,7 +92,6 @@ operator fun <T> Collection<T>?.minus(element: T): List<T>? {
  */
 fun ServerRequest.queryParamValues(name: String): Array<String> {
     return queryParam(name)
-            .map { it.split(',').toTypedArray() }
-            .orElse(emptyArray())
+        .map { it.split(',').toTypedArray() }
+        .orElse(emptyArray())
 }
-
