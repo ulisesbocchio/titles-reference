@@ -13,7 +13,7 @@ plugins {
     val kotlinVersion = "1.2.21"
     val springBootVersion = "2.0.0.RC1"
 
-    kotlin(module = "jvm") version kotlinVersion
+    kotlin("jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.allopen") version kotlinVersion
     id("com.diffplug.gradle.spotless") version "3.10.0"
     id("com.avast.gradle.docker-compose") version "0.7.1"
