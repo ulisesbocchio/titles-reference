@@ -10,41 +10,22 @@ import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
 
 plugins {
-    kotlin(module = "jvm") version "1.2.21"
-}
-
-buildscript {
     val kotlinVersion = "1.2.21"
     val springBootVersion = "2.0.0.RC1"
-    val gradleDockerVersion = "0.17.2"
 
-    repositories {
-        mavenCentral()
-        jcenter()
-        maven { url = uri("https://repo.spring.io/snapshot") }
-        maven { url = uri("https://repo.spring.io/milestone") }
-        maven { url = uri("https://repo.spring.io/libs-milestone") }
-        maven { url = uri("https://plugins.gradle.org/m2/") }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
-        classpath("gradle.plugin.com.palantir.gradle.docker:gradle-docker:${gradleDockerVersion}")
-        classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.3")
-        classpath("gradle.plugin.com.avast.gradle:gradle-docker-compose-plugin:0.6.17")
-        classpath("com.diffplug.spotless:spotless-plugin-gradle:3.10.0")
-    }
+    kotlin(module = "jvm") version kotlinVersion
+    id("org.jetbrains.kotlin.plugin.allopen") version kotlinVersion
+    id("com.diffplug.gradle.spotless") version "3.10.0"
+    id("com.avast.gradle.docker-compose") version "0.7.1"
+    id("com.palantir.docker") version "0.19.2"
+    id("org.junit.platform.gradle.plugin") version "1.0.3"
+    id("org.springframework.boot") version springBootVersion
 }
 
 apply {
     plugin("kotlin-spring")
     plugin("eclipse")
-    plugin("org.springframework.boot")
     plugin("io.spring.dependency-management")
-    plugin("com.palantir.docker")
-    plugin("org.junit.platform.gradle.plugin")
-    plugin("com.avast.gradle.docker-compose")
-    plugin("com.diffplug.gradle.spotless")
 }
 
 
