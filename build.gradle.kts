@@ -71,7 +71,18 @@ tasks.withType<JacocoReport> {
 }
 
 tasks.withType<JacocoCoverageVerification> {
-
+    executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
+    violationRules {
+        rule {
+            isEnabled = true
+            element = "CLASS"
+            limit {
+                counter = "LINE"
+                value = "TOTALCOUNT"
+                minimum = BigDecimal(0.6)
+            }
+        }
+    }
 }
 
 tasks.withType<Test> {
