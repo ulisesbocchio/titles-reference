@@ -1,5 +1,6 @@
 import com.palantir.gradle.docker.DockerExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
+import org.gradle.api.internal.tasks.testing.junit.JUnitTestFramework
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.apply
@@ -59,10 +60,24 @@ spotless {
 }
 
 tasks.withType<JacocoReport> {
+    executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
     reports {
         xml.isEnabled = true
-        xml.isEnabled = false
-        html.destination = file("${buildDir}/jacocoHtml")
+        xml.destination = file("$buildDir/reports/jacoco.xml")
+        html.destination = file("$buildDir/jacocoHtml")
+    }
+
+    dependsOn("junitPlatformTest")
+}
+
+tasks.withType<JacocoCoverageVerification> {
+
+}
+
+tasks.withType<Test> {
+    val junitPlatformTest : JavaExec by tasks
+    jacoco {
+        applyTo(junitPlatformTest)
     }
 }
 
