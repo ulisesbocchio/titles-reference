@@ -8,27 +8,23 @@ import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.kotlin
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
+import org.gradle.kotlin.dsl.version
 
 plugins {
     val kotlinVersion = "1.2.21"
     val springBootVersion = "2.0.0.RC1"
 
     kotlin("jvm") version kotlinVersion
-    id("org.jetbrains.kotlin.plugin.allopen") version kotlinVersion
+    kotlin("plugin.allopen") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
     id("com.diffplug.gradle.spotless") version "3.10.0"
     id("com.avast.gradle.docker-compose") version "0.7.1"
     id("com.palantir.docker") version "0.19.2"
     id("org.junit.platform.gradle.plugin") version "1.0.3"
     id("org.springframework.boot") version springBootVersion
+    id("io.spring.dependency-management") version "1.0.4.RELEASE"
+    idea
 }
-
-apply {
-    plugin("kotlin-spring")
-    plugin("eclipse")
-    plugin("io.spring.dependency-management")
-}
-
-
 
 group = "com.disney.studios"
 version = "0.0.1-SNAPSHOT"
@@ -48,7 +44,7 @@ spotless {
         ktlint()
     }
 
-    format ("misc") {
+    format("misc") {
         target(files("**/*.gradle", "**/*.md", "**/.gitignore"))
         trimTrailingWhitespace()
         indentWithSpaces()
@@ -94,16 +90,3 @@ dependencies {
     testRuntime("org.junit.platform:junit-platform-engine")
     testCompile("com.nhaarman:mockito-kotlin:1.5.0")
 }
-
-
-/**
- * Configures the [docker][DockerExtension] project extension.
- */
-val Project.docker get() = extensions.getByName("docker") as DockerExtension
-fun Project.docker(configure: DockerExtension.() -> Unit): Unit = extensions.configure("docker", configure)
-
-/**
- * Configures the [docker][SpotlessExtension] project extension.
- */
-val Project.spotless get() = extensions.getByName("spotless") as SpotlessExtension
-fun Project.spotless(configure: SpotlessExtension.() -> Unit): Unit = extensions.configure("spotless", configure)
