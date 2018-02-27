@@ -43,8 +43,7 @@ class TitleManagerApplication {
         context: MongoMappingContext, beanFactory: BeanFactory,
         conversions: MongoCustomConversions): MappingMongoConverter {
         val dbRefResolver = DefaultDbRefResolver(factory)
-        val mappingConverter = MappingMongoConverter(dbRefResolver,
-            context)
+        val mappingConverter = MappingMongoConverter(dbRefResolver, context)
         mappingConverter.setCustomConversions(conversions)
         mappingConverter.typeMapper = DefaultMongoTypeMapper("type", context)
         return mappingConverter

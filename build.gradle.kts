@@ -24,10 +24,17 @@ plugins {
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.0.4.RELEASE"
     idea
+    jacoco
 }
 
 group = "com.disney.studios"
 version = "0.0.1-SNAPSHOT"
+
+tasks.withType<KotlinCompile>().all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -40,30 +47,31 @@ spotless {
     }
 
     kotlin {
-        paddedCell()
         ktlint()
     }
 
     format("misc") {
-        target(files("**/*.gradle", "**/*.md", "**/.gitignore"))
+        target(files("**/*.gradle.kts", "**/*.md", "**/.gitignore"))
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
-        paddedCell()
+    }
+}
+
+tasks.withType<JacocoReport> {
+    reports {
+        xml.isEnabled = true
+        xml.isEnabled = false
+        html.destination = file("${buildDir}/jacocoHtml")
     }
 }
 
 val jar: Jar by tasks
+
 docker {
     name = "${project.group}/${jar.baseName}"
     files(jar.archivePath)
     buildArgs(mapOf("JAR_FILE" to jar.archiveName))
-}
-
-tasks.withType<KotlinCompile>().all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 repositories {
