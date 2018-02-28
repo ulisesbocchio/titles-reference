@@ -1,5 +1,6 @@
 import com.palantir.gradle.docker.DockerExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
+import org.apache.tools.ant.taskdefs.ExecTask
 import org.gradle.api.internal.tasks.testing.junit.JUnitTestFramework
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.tasks.Jar
@@ -31,11 +32,6 @@ plugins {
 group = "com.disney.studios"
 version = "0.0.1-SNAPSHOT"
 
-tasks.withType<KotlinCompile>().all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -59,36 +55,74 @@ spotless {
     }
 }
 
-tasks.withType<JacocoReport> {
-    executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
-    reports {
-        xml.isEnabled = true
-        xml.destination = file("$buildDir/reports/jacoco.xml")
-        html.destination = file("$buildDir/jacocoHtml")
+tasks {
+
+    withType<KotlinCompile>().all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
 
-    dependsOn("junitPlatformTest")
-}
+    withType<JacocoReport> {
+        group = "coverage"
+//        executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
+        reports {
+            xml.isEnabled = true
+            xml.destination = file("$buildDir/reports/jacoco.xml")
+            html.destination = file("$buildDir/jacocoHtml")
+        }
 
-tasks.withType<JacocoCoverageVerification> {
-    executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
-    violationRules {
-        rule {
-            isEnabled = true
-            element = "CLASS"
-            limit {
-                counter = "LINE"
-                value = "TOTALCOUNT"
-                minimum = BigDecimal(0.6)
+        dependsOn("junitPlatformTest")
+    }
+
+    withType<JacocoCoverageVerification> {
+        group = "coverage"
+//        executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
+        violationRules {
+            rule {
+                element = "BUNDLE"
+                limit {
+                    counter = "INSTRUCTION"
+                    value = "COVEREDRATIO"
+                    minimum = BigDecimal(0.78)
+                }
+
+                limit {
+                    counter = "BRANCH"
+                    value = "COVEREDRATIO"
+                    minimum = BigDecimal(0.56)
+                }
+
+                limit {
+                    counter = "LINE"
+                    value = "COVEREDRATIO"
+                    minimum = BigDecimal(0.83)
+                }
             }
         }
     }
-}
 
-tasks.withType<Test> {
-    val junitPlatformTest : JavaExec by tasks
-    jacoco {
-        applyTo(junitPlatformTest)
+    val junitPlatformTest: JavaExec by tasks
+    withType<Test> {
+        jacoco {
+            applyTo(junitPlatformTest)
+        }
+    }
+
+    junitPlatformTest.apply {
+        val jacoco : JacocoTaskExtension by extensions
+        jacoco.apply {
+            destinationFile = file("${buildDir}/jacoco/test.exec")
+        }
+    }
+
+    "openCoverage" {
+        group = "coverage"
+        doLast {
+            exec {
+                commandLine("open", "$buildDir/jacocoHtml/index.html")
+            }
+        }
     }
 }
 
