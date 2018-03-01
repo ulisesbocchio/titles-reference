@@ -167,16 +167,18 @@ Adds a child of a given type to a given Title.
 
 For instance:
 ```
-PUT /titles/123/episodes/321
+PUT /titles/123/child/321
 ```
-Would add Episode `321` to TV Series `123`
+Would add Episode `321` to TV Series `123`.
 
+Notice that the API will validate the child type is compatible with the parent type so there's no need for specific
+type endpoints such as `PUT /titles/123/episode/321`
 
 ### `DELETE /titles/{id}/child/{childId}`
 Removes a child of a given type to a given Title.
 
 For instance:
 ```
-DELETE /titles/123/episodes/321
+DELETE /titles/123/child/321
 ```
 Would remove Episode `321` from TV Series `123`
