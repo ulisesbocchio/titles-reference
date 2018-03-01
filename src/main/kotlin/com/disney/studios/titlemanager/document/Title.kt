@@ -21,7 +21,7 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.memberProperties
 
 /**
- * Visitor interface for Title, for things such as: update
+ * Visitor interface for Title, for things such as: update, add child, remove child
  */
 interface TitleVisitor<out T> {
     fun visit(title: Bonus): T

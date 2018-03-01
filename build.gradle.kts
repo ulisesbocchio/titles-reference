@@ -65,7 +65,6 @@ tasks {
 
     withType<JacocoReport> {
         group = "coverage"
-//        executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
         reports {
             xml.isEnabled = true
             xml.destination = file("$buildDir/reports/jacoco.xml")
@@ -77,7 +76,6 @@ tasks {
 
     withType<JacocoCoverageVerification> {
         group = "coverage"
-//        executionData = files("$buildDir/jacoco/junitPlatformTest.exec")
         violationRules {
             rule {
                 element = "BUNDLE"
