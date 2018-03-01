@@ -81,20 +81,28 @@ private class ChildrenPopulator(private val children: List<Title>) : TitleVisito
     override fun visit(title: Bonus): Title = title
 
     override fun visit(title: TvSeries): Title = title.apply {
-        seasons = children.filterIsInstance<Season>()
-        bonuses = children.filterIsInstance<Bonus>()
+        with(children) {
+            seasons = filterIsInstance<Season>()
+            bonuses = filterIsInstance<Bonus>()
+        }
     }
 
     override fun visit(title: Season): Title = title.apply {
-        episodes = children.filterIsInstance<Episode>()
-        bonuses = children.filterIsInstance<Bonus>()
+        with(children) {
+            episodes = filterIsInstance<Episode>()
+            bonuses = filterIsInstance<Bonus>()
+        }
     }
 
     override fun visit(title: Episode): Title = title.apply {
-        bonuses = children.filterIsInstance<Bonus>()
+        with(children) {
+            bonuses = filterIsInstance<Bonus>()
+        }
     }
 
     override fun visit(title: Feature): Title = title.apply {
-        bonuses = children.filterIsInstance<Bonus>()
+        with(children) {
+            bonuses = filterIsInstance<Bonus>()
+        }
     }
 }
