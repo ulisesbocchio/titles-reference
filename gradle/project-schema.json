@@ -44,6 +44,7 @@
             "junitPlatform": "org.junit.platform.gradle.plugin.JUnitPlatformExtension",
             "springBoot": "org.springframework.boot.gradle.dsl.SpringBootExtension",
             "dependencyManagement": "io.spring.gradle.dependencymanagement.internal.dsl.StandardDependencyManagementExtension",
+            "consoleReporter": "com.github.ksoichiro.console.reporter.ConsoleReporterExtension",
             "idea": "org.gradle.plugins.ide.idea.model.IdeaModel",
             "jacoco": "org.gradle.testing.jacoco.plugins.JacocoPluginExtension"
         }

@@ -1,16 +1,11 @@
 import com.palantir.gradle.docker.DockerExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
+import com.github.ksoichiro.console.reporter.config.CoverageReportConfig
+import com.github.ksoichiro.console.reporter.config.JacocoReportConfig
 import org.apache.tools.ant.taskdefs.ExecTask
 import org.gradle.api.internal.tasks.testing.junit.JUnitTestFramework
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.jvm.tasks.Jar
-import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getValue
-import org.gradle.kotlin.dsl.kotlin
-import org.gradle.kotlin.dsl.maven
-import org.gradle.kotlin.dsl.repositories
-import org.gradle.kotlin.dsl.version
 
 plugins {
     val kotlinVersion = "1.2.21"
@@ -25,6 +20,7 @@ plugins {
     id("org.junit.platform.gradle.plugin") version "1.0.3"
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version "1.0.4.RELEASE"
+    id("com.github.ksoichiro.console.reporter") version "0.5.0"
     idea
     jacoco
 }
@@ -52,6 +48,12 @@ spotless {
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
+    }
+}
+
+consoleReporter {
+    jacoco = JacocoReportConfig().apply {
+        reportFile = file("$buildDir/reports/jacoco.xml")
     }
 }
 
